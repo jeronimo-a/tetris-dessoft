@@ -16,7 +16,7 @@ class Block():
 	''' descreve os blocos do tetris
 		todo bloco é um conjunto de cubos '''
 
-	# propriedade estática de auxílio na hora de criação dos cubos extras
+	# propriedade estática de auxílio na hora de criação dos cubos adjacentes
 	direction_map = ((1,0), (0,1), (-1,0), (0,-1))
 
 	def __init__(self, screen, config, shape):
@@ -36,12 +36,15 @@ class Block():
 		# calcula o tamanho dos lados do cubo
 		self.cube_size = config.screen_width * config.cube_size_coef
 
-		# renome a posição de origem
-		self.centerx = self.config.block_preview_pos[0]
-		self.centery = self.configblock_preview_pos[1]
+		# renome a posição do cubo origem
+		self.originx = self.config.block_preview_pos[0]
+		self.originy = self.configblock_preview_pos[1]
 
 		# cria os cubos adjacentes
 		self.origin_cube, self.side_cubes = self.define_cubes()
+
+		# define a posição média do bloco (posição principal)
+		self.centerx, self.centery = self.average_position()
 
 
 	def define_cubes(self):
@@ -77,6 +80,31 @@ class Block():
 		# retorna a lista de cubos
 		return origin, cubes
 
+
+	def relative_average_position(self):
+		''' retorna a posição média do bloco relativa à origem '''
+
+		# variáveis de adição das posições x e y
+		sumx = 0
+		sumy = 0
+
+		# loop de incrementação (soma)
+		for cube in self.side_cubes:
+			sumx += cube.rect.centerx
+			sumy += cube.rect.centery
+
+		# divisão das somas
+		averagex = sumx / (len(self))
+		averagey = sumy / (len(self))
+
+		# retorna os valores
+		return averagex, averagey
+
+
+	def __len__(self):
+		''' overload da função len, retorna o número de cubos '''
+
+		return self.side_cubes + 1
 
 
 
