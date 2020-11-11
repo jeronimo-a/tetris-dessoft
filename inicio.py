@@ -7,3 +7,7 @@ pygame.init()
 win_width = 400
 win_height = 600
 window = pygame.display.set_mode((win_width, win_height))
+pygame.display.set_caption('TETRIS')
+
+while True:
+    pass
