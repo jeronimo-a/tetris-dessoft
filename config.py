@@ -14,7 +14,10 @@ class Config():
 		''' cria uma nova instância de configuração '''
 
 		# configurações da janela
-		self.window_height = 600
-		self.window_width = 400
+		self.screen_height = 600
+		self.screen_width = 400
+
+		# configurações dos blocos
+		self.cube_size_coef = 1/16	# fração da largura da tela
 
 
