@@ -192,11 +192,7 @@ class Block():
 		cubes = self.cubes
 
 		# loop de desenho
-		for cube in cubes:
-			print(cube.rect.center)
-			cube.draw()
-
-		print()
+		for cube in cubes: cube.draw()
 
 			
 

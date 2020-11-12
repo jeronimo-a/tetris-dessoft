@@ -9,8 +9,34 @@ Módulo principal
 
 import sys
 import pygame
-from config import Config
 from block import Block
+from config import Config
+from random import randint
+
+# para teste --- --- ---- ---- -- ---- ----
+shapes = []
+colors = []
+positions = []
+for i in range(100):
+
+	shape = [0, 0, 0, 0]
+	for _ in range(4):
+		if sum(shape) <= 4: shape[randint(0, 3)] += randint(0, 1)
+		else: break
+	
+	shapes.append(shape)
+
+	color = []
+	for _ in range(3):
+		color.append(randint(0, 255))
+	colors.append(color)
+
+	position = []
+	position.append(randint(0, 600))
+	position.append(randint(0, 400))
+
+	positions.append(position)
+# ---- ---- -------- --- -- ------ --- ----
 
 # roda o jogo
 def run():
@@ -26,9 +52,12 @@ def run():
 	pygame.display.set_caption('TETRIS')
 
 	# define uns blocos para teste
-	block1 = Block(SCREEN, SETTINGS, [0, 1, 2, 0], [225, 225, 50])
-	block2 = Block(SCREEN, SETTINGS, [0, 3, 0, 0], [255, 125, 125])
-	block2.centery -= 2 * SETTINGS.cube_size_coef * SETTINGS.screen_width
+	blocks = []
+	for i in range(len(shapes)):
+		block = Block(SCREEN, SETTINGS, shapes[i], colors[i])
+		blocks.append(block)
+		block.centerx = positions[i][0]
+		block.centery = positions[i][1]
 
 	# loop principal de jogo
 	while True:
@@ -39,10 +68,9 @@ def run():
 			# evento de fechamento
 			if event.type == pygame.QUIT: sys.exit()
 
-		# redesenha o plano de fundo e o bloco
+		# redesenha o plano de fundo e os blocos
 		SCREEN.fill(SETTINGS.bg_color)
-		block1.draw()
-		block2.draw()
+		for block in blocks: block.draw()
 
 		# redesenha a tela
 		pygame.display.flip()
