@@ -14,10 +14,12 @@ class Config():
 		''' cria uma nova instância de configuração '''
 
 		# configurações da janela
-		self.screen_height = 600
-		self.screen_width = 400
+		self.screen_height = 700
+		self.screen_width = 600
+		self.bg_color = (50, 50, 50)
 
 		# configurações dos blocos
-		self.cube_size_coef = 1/16	# fração da largura da tela
+		self.cube_size_coef = 1/24				# fração da largura da tela
+		self.block_preview_pos = [1/2, 1/2]		# fração do tamanho da tela (posição de amostragem do próximo bloco)
 
 

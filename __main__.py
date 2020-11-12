@@ -7,35 +7,50 @@ Módulo principal
 
 '''
 
+import sys
 import pygame
 from config import Config
 from block import Block
 
-# construção das configurações
-SETTINGS = Config()
+# roda o jogo
+def run():
 
-# inicialização do pygame
-pygame.init()
+	# construção das configurações
+	SETTINGS = Config()
 
-# criação da janela do jogo e configuração do título
-SCREEN = pygame.display.set_mode((SETTINGS.screen_width, SETTINGS.screen_height))
-pygame.display.set_caption('TETRIS')
+	# inicialização do pygame
+	pygame.init()
 
-# bandeira do loop principal do programa
-ACTIVE = True
+	# criação da janela do jogo e configuração do título
+	SCREEN = pygame.display.set_mode((SETTINGS.screen_width, SETTINGS.screen_height))
+	pygame.display.set_caption('TETRIS')
 
-# estado do programa (0 para tela de início, 1 para jogo, 2 para fim de jogo)
-STATE = 0
+	# define uns blocos para teste
+	block1 = Block(SCREEN, SETTINGS, [0, 1, 2, 0], [225, 225, 50])
+	block2 = Block(SCREEN, SETTINGS, [0, 3, 0, 0], [255, 125, 125])
+	block2.centery -= 2 * SETTINGS.cube_size_coef * SETTINGS.screen_width
 
-# loop principal de jogo
-while ACTIVE:
+	# loop principal de jogo
+	while True:
 
-	# tela de início
-	if STATE == 0:
+		# observa eventos
+		for event in pygame.event.get():
 
-		# definindo título
-		title_font = pygame.font.SysFont('arial', 48, bold=True)
-		tilte_text = font.render('TETRIS', True, (0,0,255))
+			# evento de fechamento
+			if event.type == pygame.QUIT: sys.exit()
+
+		# redesenha o plano de fundo e o bloco
+		SCREEN.fill(SETTINGS.bg_color)
+		block1.draw()
+		block2.draw()
+
+		# redesenha a tela
+		pygame.display.flip()
+
+
+run()
+
+			
 
 
 
