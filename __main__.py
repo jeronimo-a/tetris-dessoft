@@ -12,8 +12,8 @@ import pygame
 from block import Block
 from config import Config
 from random import randint
-
-# para teste --- --- ---- ---- -- ---- ----
+'''
+# para teste --- --- ---- ---- -- ---- ---- 
 shapes = []
 colors = []
 positions = []
@@ -37,7 +37,7 @@ for i in range(100):
 
 	positions.append(position)
 # ---- ---- -------- --- -- ------ --- ----
-
+'''
 # roda o jogo
 def run():
 
@@ -52,29 +52,34 @@ def run():
 	pygame.display.set_caption('TETRIS')
 
 	# define uns blocos para teste
+	'''
 	blocks = []
 	for i in range(len(shapes)):
 		block = Block(SCREEN, SETTINGS, shapes[i], colors[i])
 		blocks.append(block)
 		block.centerx = positions[i][0]
 		block.centery = positions[i][1]
-
+'''
 
 	# loop principal de jogo
 	while True:
+
+		# redesenha o plano de fundo e os blocos
+		SCREEN.fill(SETTINGS.bg_color) 
+
 		#variavel tela de inicio
 		screen_start = True 
 
 		#tela de inicio
 		if screen_start:
-			title_font = pygame.font.SysFont(None, 70)
-			title_width = title_font.get_width()
+			title_font = pygame.font.SysFont(None, 100)
 			title_text = title_font.render('TETRIS', True, (0,0,255))
-			SCREEN.blit(title_text, (SETTINGS.screen_width/2 - title_width/2, SETTINGS.screen_height/2))
+			title_width = title_text.get_width()
+			SCREEN.blit(title_text, (SETTINGS.screen_width/2 - title_width/2, SETTINGS.screen_height/3))
 
-			description_font = pygame.font.SysFont(None, 28)
-			description_text = description_font.render('Press Space to star the game', True, (255,255,0))
-			SCREEN.blit(title_text, (SETTINGS.screen_width/2*(1/2), SETTINGS.screen_height/2*(1/2)))
+			#description_font = pygame.font.SysFont(None, 28)
+			#description_text = description_font.render('Press Space to star the game', True, (255,255,0)
+			#SCREEN.blit(description_text, (SETTINGS.screen_width/2*(1/2), SETTINGS.screen_height/2*(1/2)))
 
 		# observa eventos
 		for event in pygame.event.get():
@@ -82,9 +87,8 @@ def run():
 			# evento de fechamento
 			if event.type == pygame.QUIT: sys.exit()
 
-		# redesenha o plano de fundo e os blocos
-		SCREEN.fill(SETTINGS.bg_color)
-		for block in blocks: block.draw()
+
+		#for block in blocks: block.draw()
 
 		# redesenha a tela
 		pygame.display.flip()
