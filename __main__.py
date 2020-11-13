@@ -59,8 +59,18 @@ def run():
 		block.centerx = positions[i][0]
 		block.centery = positions[i][1]
 
+
 	# loop principal de jogo
 	while True:
+		#variavel tela de inicio
+		screen_start = True 
+
+		#tela de inicio
+		if screen_start:
+			title_font = pygame.font.SaysFont(None, 48)
+			title_text = title_font.render('TETRIS', True, (0,0,255))
+
+		else:
 
 		# observa eventos
 		for event in pygame.event.get():
