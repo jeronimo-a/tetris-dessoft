@@ -12,32 +12,8 @@ import pygame
 from block import Block
 from config import Config
 from random import randint
-'''
-# para teste --- --- ---- ---- -- ---- ---- 
-shapes = []
-colors = []
-positions = []
-for i in range(100):
 
-	shape = [0, 0, 0, 0]
-	for _ in range(4):
-		if sum(shape) <= 4: shape[randint(0, 3)] += randint(0, 1)
-		else: break
-	
-	shapes.append(shape)
 
-	color = []
-	for _ in range(3):
-		color.append(randint(0, 255))
-	colors.append(color)
-
-	position = []
-	position.append(randint(0, 600))
-	position.append(randint(0, 400))
-
-	positions.append(position)
-# ---- ---- -------- --- -- ------ --- ----
-'''
 # roda o jogo
 def run():
 
@@ -51,15 +27,6 @@ def run():
 	SCREEN = pygame.display.set_mode((SETTINGS.screen_width, SETTINGS.screen_height))
 	pygame.display.set_caption('TETRIS')
 
-	# define uns blocos para teste
-	'''
-	blocks = []
-	for i in range(len(shapes)):
-		block = Block(SCREEN, SETTINGS, shapes[i], colors[i])
-		blocks.append(block)
-		block.centerx = positions[i][0]
-		block.centery = positions[i][1]
-'''
 
 	# loop principal de jogo
 	while True:
