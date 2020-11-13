@@ -69,7 +69,7 @@ def run():
 		if screen_start:
 			title_font = pygame.font.SaysFont(None, 48)
 			title_text = title_font.render('TETRIS', True, (0,0,255))
-
+			SCREEN.blit(title_text, (SETTINGS.screen_width/2, SETTINGS.screen_height/2))
 		else:
 
 		# observa eventos
