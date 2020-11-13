@@ -67,16 +67,14 @@ def run():
 
 		#tela de inicio
 		if screen_start:
-			title_font = pygame.font.SaysFont(None, 70)
+			title_font = pygame.font.SysFont(None, 70)
 			title_width = title_font.get_width()
 			title_text = title_font.render('TETRIS', True, (0,0,255))
 			SCREEN.blit(title_text, (SETTINGS.screen_width/2 - title_width/2, SETTINGS.screen_height/2))
 
-			description_font = pygame.font.SaysFont(None, 28)
-			description_text = description_font.font.SaysFont('Press Space to star the game')
+			description_font = pygame.font.SysFont(None, 28)
+			description_text = description_font.render('Press Space to star the game', True, (255,255,0))
 			SCREEN.blit(title_text, (SETTINGS.screen_width/2*(1/2), SETTINGS.screen_height/2*(1/2)))
-
-		else:
 
 		# observa eventos
 		for event in pygame.event.get():
