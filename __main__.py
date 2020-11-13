@@ -44,9 +44,10 @@ def run():
 			title_width = title_text.get_width()
 			SCREEN.blit(title_text, (SETTINGS.screen_width/2 - title_width/2, SETTINGS.screen_height/3))
 
-			#description_font = pygame.font.SysFont(None, 28)
-			#description_text = description_font.render('Press Space to star the game', True, (255,255,0)
-			#SCREEN.blit(description_text, (SETTINGS.screen_width/2*(1/2), SETTINGS.screen_height/2*(1/2)))
+			description_font = pygame.font.SysFont(None, 30)
+			description_text = description_font.render('Press SPACE to Start', True, (255,255,0))
+			description_width = description_text.get_width()
+			SCREEN.blit(description_text, (SETTINGS.screen_width/2 - description_width/2, SETTINGS.screen_height*(1 - 1/3)))
 
 		# observa eventos
 		for event in pygame.event.get():
