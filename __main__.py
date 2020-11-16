@@ -49,12 +49,15 @@ def run():
 			description_width = description_text.get_width()
 			SCREEN.blit(description_text, (SETTINGS.screen_width/2 - description_width/2, SETTINGS.screen_height*(1 - 1/3)))
 
+			#comando para iniciar o jogo
+			if event.type == pygame.K_ESPACE:
+
+
 		# observa eventos
 		for event in pygame.event.get():
 
 			# evento de fechamento
 			if event.type == pygame.QUIT: sys.exit()
-
 
 		#for block in blocks: block.draw()
 
