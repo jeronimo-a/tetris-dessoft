@@ -27,18 +27,19 @@ def run():
 	SCREEN = pygame.display.set_mode((SETTINGS.screen_width, SETTINGS.screen_height))
 	pygame.display.set_caption('TETRIS')
 
+	# bandeira da tela de inicio
+	START_SCREEN = True
+
 
 	# loop principal de jogo
 	while True:
 
 		# redesenha o plano de fundo e os blocos
-		SCREEN.fill(SETTINGS.bg_color) 
-
-		#variavel tela de inicio
-		screen_start = True 
+		SCREEN.fill(SETTINGS.bg_color)  
 
 		#tela de inicio
-		if screen_start:
+		if START_SCREEN:
+
 			title_font = pygame.font.SysFont(None, 100)
 			title_text = title_font.render('TETRIS', True, (0,0,255))
 			title_width = title_text.get_width()
@@ -49,9 +50,6 @@ def run():
 			description_width = description_text.get_width()
 			SCREEN.blit(description_text, (SETTINGS.screen_width/2 - description_width/2, SETTINGS.screen_height*(1 - 1/3)))
 
-			#comando para iniciar o jogo
-			if event.type == pygame.K_ESPACE:
-
 
 		# observa eventos
 		for event in pygame.event.get():
@@ -59,7 +57,10 @@ def run():
 			# evento de fechamento
 			if event.type == pygame.QUIT: sys.exit()
 
-		#for block in blocks: block.draw()
+			#comando para iniciar o jogo
+			if event.type == pygame.KEYDOWN:
+
+				if START_SCREEN and event.key == pygame.K_SPACE: START_SCREEN = False
 
 		# redesenha a tela
 		pygame.display.flip()
