@@ -16,238 +16,237 @@ class Block():
 	''' descreve os blocos do tetris
 		todo bloco é um conjunto de cubos '''
 
-	def __init__(self, screen, config, shape, color):
-		''' cria um único novo bloco, todo os blocos têm um cubo de origem
-			a partir do qual são adicionados novos cubos a partir de "shape"
-			que é uma tupla de quatro inteiros de formato:
+	direction_map = ((0,-1),(1,0),(0,1),(-1,0))
 
-			shape = (cima, direita, baixo, esquerda)
+	def __init__(self, screen, config, shape, color, odd=False):
+		''' cria um único novo bloco, todo os blocos têm um cubo de origem
+			a partir do qual são adicionados novos cubos, dependendo de "shape"
+			que é uma lista de quatro inteiros de formato:
+
+			shape = [cima, direita, baixo, esquerda]
 
 			onde "cima" é a quantidade de blocos acima do bloco origem e etc. '''
 
 		# amarra os argumentos específicos à self
-		self.screen = screen
-		self.config = config
-		self.shape = shape
-		self.color = color
+		self.screen = screen 	# surface na qual ele é desenhado
+		self.config = config	# configurações de jogo
+		self.shape = shape		# formato do bloco (alterado para rotacioná-lo)
+		self.color = color		# cor do bloco
+		self.odd = odd			# se o bloco tem dois cubos "origem" (ainda não funciona)
 
-		# propriedade de direção
-		self.direction = [(0,-1), (1,0), (0,1), (-1,0)]
+		# propriedades pygame
+		self.cubes = list()		# lista dos cubos
 
-		# calcula o tamanho dos lados do cubo
-		self.cube_size = round(config.screen_width * config.cube_size_coef)
+		# propriedades de movimento
+		self.virtualy = float()		# posição vertical que varia uniformemente (center varia em múltiplos de cube_size) (é a manipulada por fora)
 
-		# limites em pixels [cima, direita, baixo, esquerda]
-		self.borders = [(shape[0]+0.5) * self.cube_size, (shape[1]+0.5) * self.cube_size, (shape[2]+0.5) * self.cube_size, (shape[3]+0.5) * self.cube_size]
+		# propriedades principais de posição
+		self.centerx, self.centery = 0, 0			# posição do centro de rotação (centery depende de virtualy) (apenas centerx é manipulado)
+		self.deltax, self.deltay = int(), int()		# center + delta = origin
+		self.originx, self.originy = int(), int()	# posição do centro do cubo de oridem (para posicionamento na tela)
+		self.averagex, self.averagey = int(), int()	# posição média do bloco (usada para posicionamento do próximo bloco)
+		self.minimuny = dict()						# posições verticais das faces inferiores do bloco
 
-		# define a posição absoluta
-		self._centerx = self.config.block_preview_pos[0] * config.screen_width
-		self._centery = self.config.block_preview_pos[1] * config.screen_height
+		# propriedades principais de dimensão
+		self.cube_size = int(config.screen_width * config.cube_size_coef)	# tamanho dos lados dos cubos que compõem o bloco
+		self.height = int()													# altura do bloco
+		self.width = int()													# largura do bloco
 
-		# cria os cubos
-		self.cubes = self.define_cubes()
+		# define height e width a partir de cube_size e shape
+		dimensions = self.get_dimensions()
+		self.height = dimensions[0]
+		self.width = dimensions[1]
 
-		# define a posição média dos cubos em relação ao cubo de origem
-		self.averagex, self.averagey = self.relative_average_position()
+		# define os deltas a partir de cube_size, width e height
+		deltas = self.get_deltas()
+		self.deltax = deltas[0]
+		self.deltay = deltas[1]
 
-		# define a posição do cubo origem
-		self._originx = self._centerx - self.averagex
-		self._originy = self._centery - self.averagey
+		# define origin a partir dos deltas e de center
+		origin = self.get_origin_from_center()
+		self.originx = origin[0]
+		self.originy = origin[1]
 
-		# posição y a ser manipulada por fora
-		self.virtualy = self._originy
+		# define average a partir de origin e shape
+		averages = self.get_average_from_origin()
+		self.averagex = averages[0]
+		self.averagey = averages[1]
 
-		# atualiza as posições dos cubos
-		self.update_position(0)
-		self.update_position(1)
+		# variáveis secundárias (usadas para determinar center a partir de average)
+		average_deltax = self.averagex - self.centerx
+		average_deltay = self.averagey - self.centery
 
+		# define minimuny a partir de originy e shape
+		self.minimuny = self.get_minimuny()
 
-	def set_centerx(self, value):
-		''' atualiza o valor de self.originx e as posições dos cubos ao modificar self.centerx '''
+		# constrói os objetos Cube
+		self.cubes = self.make_cubes()
 
-		self._centerx = value
+		# coloca o bloco na posição de amostragem alterando o valor de average
+		self.averagex = config.block_preview_pos[0] * config.screen_width
+		self.averagey = config.block_preview_pos[1] * config.screen_height
 
-		self.originx = self._centerx - self.averagex
-		self.update_position(0)
+		# atualiza center a partir de average
+		self.centerx = self.averagex - average_deltax
+		self.centery = self.averagey - average_deltay
 
-	def set_centery(self, value):
-		''' atualiza o valor de self.originy e as posições dos cubos ao modificar self.centery '''
+		# define virtualy a partir de centery
+		self.virtualy = float(self.centery)
 
-		self._centery = value
-
-		self.originy = self._centery - self.averagey
-		self.update_position(1)
-
-	def get_centerx(self): return self._centerx
-	def get_centery(self): return self._centery
-
-	# define centery e centerx
-	centerx = property(get_centerx, set_centerx)
-	centery = property(get_centery, set_centery)
-
-
-	def set_originx(self, value):
-		''' atualiza o valor de self._centerx e as posições dos cubos ao modificar self.originx '''
-
-		self._originx = value
-
-		self._centerx = self._originx + self.averagex
-		self.update_position(0)
-
-	def set_originy(self, value):
-		''' atualiza o valor de self._centery e as posições dos cubos ao modificar self.originy '''
-
-		self._originy = value
-
-		self._centery = self._originy + self.averagey
-		self.update_position(1)
-
-	def get_originx(self): return self._originx
-	def get_originy(self): return self._originy
-
-	# define centery e centerx
-	originx = property(get_originx, set_originx)
-	originy = property(get_originy, set_originy)
-
-
-	def update_position(self, component):
-		''' atualiza as posições absolutas de todos os cubos com base em originx e originy '''
-
-		update_originy = ((self.virtualy - (self.originy + self.borders[2])) / self.cube_size) >= 1
-		if update_originy: self.originy = self._originy + self.cube_size
-
-		# loop de atualização
-		for cube in self.cubes:
-
-			# para x
-			if component == 0:
-				cube.relativex = cube.distance * self.direction[cube.side][0]
-				cube.rect.centerx = self.originx + cube.relativex
-			# para y
-			elif component == 1:
-				cube.relativey = cube.distance * self.direction[cube.side][1]
-				cube.rect.centery = self.originy + cube.relativey
-
-
-	def define_cubes(self):
-		''' define os cubos integrantes do bloco '''
-
-		# define a lista de cubos
-		cubes = set()
-
-		# coleta de propriedades (por clareza do código)
-		shape = self.shape
-		color = self.color
-		screen = self.screen
-		cube_size = self.cube_size
-
-		# cria o cubo de origem
-		origin = Cube(self, 0, 0, color, 0, 0)
-		cubes.add(origin)
-
-		# loop de criação dos cubos adjacentes, lado por lado
-		for side in range(4):
-
-			# loop de cada cubo na direção específica
-			for multiplier in range(shape[side]):
-
-				# calcula a distância em pixels
-				multiplier += 1
-				distance = cube_size * multiplier
-
-				# multiplica a componente certa por 1 ou -1 e a outra por 0
-				relativex = distance * self.direction[side][0]
-				relativey = distance * self.direction[side][1]
-
-				# cria o cubo
-				new_cube = Cube(self, relativex, relativey, color, side, distance)
-
-				# adiciona-o à lista de cubos
-				cubes.add(new_cube)
-
-		# retorna a lista de cubos
-		return cubes
-
-
-	def relative_average_position(self):
-		''' retorna a posição média do bloco relativa à origem '''
-
-		# variáveis de adição das posições x e y
-		sumx = 0
-		sumy = 0
-
-		# loop de incrementação (soma)
-		for cube in self.cubes:
-			sumx += cube.rect.centerx
-			sumy += cube.rect.centery
-
-		# divisão das somas
-		averagex = sumx / (len(self))
-		averagey = sumy / (len(self))
-
-		# retorna os valores
-		return averagex, averagey
+		# atualiza as posições e as posições dos cubos
+		self.update()
 
 
 	def __len__(self):
 		''' overload da função len, retorna o número de cubos '''
+		return sum(self.shape) + 1
 
-		return len(self.cubes) + 1
+
+	def make_cubes(self):
+		''' constrói todos os cubos que compõem o bloco '''
+
+		cubes = list()
+
+		for side in range(len(self)): cubes.append(Cube(self))
+
+		return cubes
+
+
+	def update(self):
+		''' atualiza as posições conforme virtualy e centerx '''
+
+		# atualiza centery a partir de virtualy
+		update_centery = (self.virtualy - self.centery) > self.cube_size
+		if update_centery: self.centery += self.cube_size
+
+		# atualiza as dimensões
+		dimensions = self.get_dimensions()
+		self.height = dimensions[0]
+		self.width = dimensions[1]
+
+		# atualiza os deltas a partir das dimensões
+		deltas = self.get_deltas()
+		self.deltax = deltas[0]
+		self.deltay = deltas[1]
+
+		# atualiza origin a partir de center e dos deltas
+		origin = self.get_origin_from_center()
+		self.originx = origin[0]
+		self.originy = origin[1]
+
+		# atualiza os valores de minimuny a partir de origin e shape
+		self.minimuny = self.get_minimuny()
+
+		# atualiza a posição de cada cubo com base em origin
+		count = 1
+
+		self.cubes[0].rect.centerx = self.originx
+		self.cubes[0].rect.centery = self.originy
+
+		for side in range(4):
+
+			for multiplier in range(1, self.shape[side] + 1):
+				self.cubes[count].rect.centerx = self.originx + multiplier * Block.direction_map[side][0] * self.cube_size
+				self.cubes[count].rect.centery = self.originy + multiplier * Block.direction_map[side][1] * self.cube_size
+				count += 1
+
+
+	def get_dimensions(self):
+		''' calcula os valores de height e width a partir de cube size e shape '''
+
+		height = self.cube_size * (1 + self.shape[0] + self.shape[2])
+		width = self.cube_size * (1 + self.shape[1] + self.shape[3])
+
+		return height, width
+
+
+	def get_deltas(self):
+		''' calcula os valores de delta a partir de cube size, width e height '''
+
+		# define os deltas a partir de cube_size, width e height
+		deltax = (self.width - self.cube_size) / 2
+		deltay = (self.height - self.cube_size) / 2
+		if self.shape[3] < self.shape[1]: deltax *= -1
+		if self.shape[0] < self.shape[2]: deltay *= -1
+
+		# verifica a validade dos deltas (ou ambos múltiplos de cube_size, ou nenhum dos dois)
+		deltax_multiple = deltax % self.cube_size == 0
+		deltay_multiple = deltay % self.cube_size == 0
+		if deltay_multiple and not deltax_multiple: deltax = (deltax // self.cube_size) * self.cube_size
+		if deltax_multiple and not deltay_multiple: deltay = (deltay // self.cube_size) * self.cube_size
+
+		return deltax, deltay
+
+
+	def get_origin_from_center(self):
+		''' calcula origin a partir de center e delta '''
+
+		originx = self.centerx + self.deltax
+		originy = self.centery + self.deltay
+
+		return originx, originy
+
+
+	def get_average_from_origin(self):
+		''' calcula a posição média do bloco a partir de origin e shape '''
+
+		sumx, sumy = self.originx, self.originy
+
+		for side in range(4):
+
+			for multiple in range(1, self.shape[side] + 1):
+				sumx += self.originx + multiple * Block.direction_map[side][0]
+				sumy += self.originy + multiple * Block.direction_map[side][1]
+
+		averagex = round(sumx / len(self))
+		averagey = round(sumy / len(self))
+
+		return averagex, averagey
+
+
+	def get_minimuny(self):
+		''' calcula os valores de minimuny a partir de origin e shape '''
+
+		minimuny = dict()
+
+		minimuny[self.originx] = self.originy + self.cube_size * (0.5 + self.shape[2])
+
+		for side in [1,3]:
+			for multiple in range(1, self.shape[side] + 1):
+				minimuny[self.originx + multiple * Block.direction_map[side][0]] = self.originy + 0.5 * self.cube_size
+
+		return minimuny
 
 
 	def draw(self):
-		''' desenha o bloco na tela '''
+		''' desenha todos os cubos em screen '''
 
-		# coleta das propriedades (por clareza do código)
-		originx = self.originx
-		originy = self.originy
-		screen = self.screen
-		cubes = self.cubes
-
-		# loop de desenho
-		for cube in cubes: cube.draw()
-
-
-	def rotate(self, direction):
-		''' rotaciona o bloco '''
-
-		if direction == 'left':
-			single_direction = self.direction.pop()
-			self.direction.insert(0, single_direction)
-			single_shape = self.shape.pop()
-			self.shape.insert(0, single_shape)
-
-		elif direction == 'right':
-			single_direction = self.direction.pop(0)
-			self.direction.append(single_direction)
-			single_shape = self.shape.pop(0)
-			self.shape.append(single_shape)
-
-		shape = self.shape
-
-		print(direction)
-		print(self.borders[2])
-
-		# limites em pixels [cima, direita, baixo, esquerda]
-		self.borders = [(shape[0]+0.5) * self.cube_size, (shape[1]+0.5) * self.cube_size, (shape[2]+0.5) * self.cube_size, (shape[3]+0.5) * self.cube_size]
-
-		self.virtualy = self.originy + self.borders[2]
-
-		print(self.borders[2])
-		print()
-
-		self.update_position(0)
-		self.update_position(1)
+		for cube in self.cubes: cube.draw()
 
 
 	def spawn(self):
+		''' transfere o bloco da área de demonstração para a área de jogo '''
 
-		self.originx = (self.config.block_spawn_pos[0] // self.config.cube_size_coef) * self.cube_size + 1/2 * self.cube_size
-		self.originy = self.config.screen_height - (self.config.block_spawn_pos[1] * self.cube_size + 1/2 * self.cube_size)
+		self.centery = int(self.config.screen_height - (self.config.block_spawn_pos[1] + 0.5) * self.cube_size)
+		self.virtualy = float(self.centery)
+
+		self.centerx = int(self.config.block_spawn_pos[0] * self.config.screen_width)
+
+		self.update()
 
 
+	def rotate(self, direction):
+		''' rotaciona o bloco mexendo na ordem dos elementos em shape '''
 
+		if direction == 'right':
+			tmp = self.shape.pop()
+			self.shape.insert(0, tmp)
 
+		elif direction == 'left':
+			tmp = self.shape.pop(0)
+			self.shape.append(tmp)
+
+		self.update()
 
 
 

@@ -34,7 +34,7 @@ def run():
 	STATE = 0
 
 	# blocos
-	BLOCKS = [make_random_block(SCREEN, SETTINGS)]
+	BLOCKS = [Block(SCREEN, SETTINGS, [1, 2, 0, 0] , [255,125,0])]
 
 	# loop principal de jogo
 	while True:
@@ -63,23 +63,15 @@ def run():
 		# tela de jogo
 		elif STATE == 1:
 
-			if spawn:
-				BLOCKS.append(make_random_block(SCREEN, SETTINGS))
-				main_block = BLOCKS[-2]
-				demo_block = BLOCKS[-1]
-				main_block.spawn()
-				spawn = False
+			main_block = BLOCKS[0]
 
-			# atualiza posição vertical do bloco
-			if main_block.virtualy < SETTINGS.screen_height:
+			if spawn: main_block.spawn(); spawn = False
+
+			if main_block.minimuny[main_block.originx] < SETTINGS.screen_height:
 				main_block.virtualy += SETTINGS.block_speed
-			
-			else: spawn = True
 
-			main_block.update_position(1)
-
-			# pinta os blocos
-			for block in BLOCKS: block.draw()
+			main_block.update()
+			main_block.draw()
 
 		# tela de fim de jogo
 		elif STATE == 2: pass
@@ -94,8 +86,8 @@ def run():
 				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
 				elif event.key == pygame.K_DOWN and STATE == 1: main_block.rotate('left')
 				elif event.key == pygame.K_UP and STATE == 1: main_block.rotate('right')
-				elif event.key == pygame.K_LEFT and STATE == 1: main_block.originx -= main_block.cube_size
-				elif event.key == pygame.K_RIGHT and STATE == 1: main_block.originx += main_block.cube_size
+				elif event.key == pygame.K_LEFT and STATE == 1: main_block.centerx -= main_block.cube_size
+				elif event.key == pygame.K_RIGHT and STATE == 1: main_block.centerx += main_block.cube_size
 
 		# redesenha a tela
 		pygame.display.flip()

@@ -14,24 +14,18 @@ from pygame.sprite import Sprite
 class Cube(Sprite):
 	''' descreve os cubos que compõem os blocos '''
 
-	def __init__(self, block, relativex, relativey, color, side, distance):
+	def __init__(self, block):
 		''' cria um único cubo novo '''
 
 		# define a instância pygame.sprite.Sprite
 		super(Cube, self).__init__()
 
 		# amarra os argumentos à self
-		self.side = side
 		self.block = block
-		self.color = color
-		self.distance = distance
-		self.relativex = relativex
-		self.relativey = relativey
 
 		# rouba propriedades de block
-		self.config = self.block.config
-		self.screen = self.block.screen
-		self.size = self.block.cube_size
+		self.color = block.color
+		self.screen = block.screen
 
 		# define o objeto Rect do cubo (propriedade de Sprite)
 		self.rect = pygame.Rect(0, 0, block.cube_size, block.cube_size)
