@@ -15,11 +15,11 @@ class Config():
 
 		# configurações da janela
 		self.screen_height = 700
-		self.screen_width = 600
-		self.bg_color = (50, 50, 50)
+		self.screen_width = 700
+		self.bg_color = (0, 0, 0)
 
 		# configurações dos blocos
-		self.cube_size_coef = 1/24				# fração da largura da tela
+		self.cube_size_coef = 3/70				# fração da largura da tela
 		self.block_preview_pos = [3/4, 1/4]		# fração do tamanho da tela (posição de amostragem do próximo bloco)
 		self.block_spawn_pos = [1/2, 24]		# [fraçao da arena, altura em relacao ao chão da arena (blocos)]
 		self.block_speed = 1/8
