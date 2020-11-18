@@ -64,10 +64,19 @@ def run():
 			description_width = description_text.get_width()
 			SCREEN.blit(description_text, (SETTINGS.screen_width/2 - description_width/2, SETTINGS.screen_height*(1 - 1/3)))
 
+			
+
 			spawn = True
 
 		# tela de jogo
 		elif STATE == 1:
+			
+			font = pygame.font.SysFont(None, 72)
+			text = font.render('TETRIS', True, (255, 255, 255))
+			font2 = pygame.font.SysFont(None, 36)
+			text2 = font2.render('Next Shape', True, (255, 255, 255))
+
+
 
 			if spawn:
 				new_block = make_random_block(SCREEN, SETTINGS)
@@ -93,6 +102,22 @@ def run():
 
 			for cube in CUBES:
 				cube.draw()
+
+			# constroi o grid
+			block_size = (SETTINGS.screen_width/1.4 - SETTINGS.screen_width/3.5)/10
+			grid_builder(block_size, SCREEN, SETTINGS.screen_width, SETTINGS.screen_height, 1)
+
+			text_wdt = (SETTINGS.screen_width/2) - (text.get_width()/2)
+			text_hgt = (SETTINGS.screen_height/24)
+
+			SCREEN.blit(text, (text_wdt, text_hgt))
+			SCREEN.blit(text2, (530, 300))
+
+			
+			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/3.5, SETTINGS.screen_height), (SETTINGS.screen_width/3.5, SETTINGS.screen_height/7), 4)
+			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/1.4, SETTINGS.screen_height), (SETTINGS.screen_width/1.4, SETTINGS.screen_height/7), 4)
+			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/3.5, SETTINGS.screen_height/7), (SETTINGS.screen_width/1.4, SETTINGS.screen_height/7), 4)
+			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/3.5, SETTINGS.screen_height), (SETTINGS.screen_width/1.4, SETTINGS.screen_height), 4)
 
 		# tela de fim de jogo
 		elif STATE == 2: pass
