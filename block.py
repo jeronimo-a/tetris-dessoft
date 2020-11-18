@@ -16,9 +16,6 @@ class Block():
 	''' descreve os blocos do tetris
 		todo bloco é um conjunto de cubos '''
 
-	# propriedade estática de auxílio na hora de criação dos cubos adjacentes
-	direction_map = ((0,-1), (1,0), (0,1), (-1,0))
-
 	def __init__(self, screen, config, shape, color):
 		''' cria um único novo bloco, todo os blocos têm um cubo de origem
 			a partir do qual são adicionados novos cubos a partir de "shape"
@@ -34,8 +31,14 @@ class Block():
 		self.shape = shape
 		self.color = color
 
+		# propriedade de direção
+		self.direction = [(0,-1), (1,0), (0,1), (-1,0)]
+
 		# calcula o tamanho dos lados do cubo
 		self.cube_size = round(config.screen_width * config.cube_size_coef)
+
+		# limites em pixels [cima, direita, baixo, esquerda]
+		self.borders = [(shape[0]+0.5) * self.cube_size, (shape[1]+0.5) * self.cube_size, (shape[2]+0.5) * self.cube_size, (shape[3]+0.5) * self.cube_size]
 
 		# define a posição absoluta
 		self._centerx = self.config.block_preview_pos[0] * config.screen_width
@@ -50,6 +53,9 @@ class Block():
 		# define a posição do cubo origem
 		self._originx = self._centerx - self.averagex
 		self._originy = self._centery - self.averagey
+
+		# posição y a ser manipulada por fora
+		self.virtualy = self._originy
 
 		# atualiza as posições dos cubos
 		self.update_position(0)
@@ -107,13 +113,20 @@ class Block():
 	def update_position(self, component):
 		''' atualiza as posições absolutas de todos os cubos com base em originx e originy '''
 
+		update_originy = ((self.virtualy - (self.originy + self.borders[2])) / self.cube_size) >= 1
+		if update_originy: self.originy = self._originy + self.cube_size
+
 		# loop de atualização
 		for cube in self.cubes:
 
 			# para x
-			if component == 0: cube.rect.centerx = self.originx + cube.relativex
+			if component == 0:
+				cube.relativex = cube.distance * self.direction[cube.side][0]
+				cube.rect.centerx = self.originx + cube.relativex
 			# para y
-			elif component == 1: cube.rect.centery = self.originy + cube.relativey
+			elif component == 1:
+				cube.relativey = cube.distance * self.direction[cube.side][1]
+				cube.rect.centery = self.originy + cube.relativey
 
 
 	def define_cubes(self):
@@ -129,7 +142,7 @@ class Block():
 		cube_size = self.cube_size
 
 		# cria o cubo de origem
-		origin = Cube(self, 0, 0, color)
+		origin = Cube(self, 0, 0, color, 0, 0)
 		cubes.add(origin)
 
 		# loop de criação dos cubos adjacentes, lado por lado
@@ -143,11 +156,11 @@ class Block():
 				distance = cube_size * multiplier
 
 				# multiplica a componente certa por 1 ou -1 e a outra por 0
-				relativex = distance * Block.direction_map[side][0]
-				relativey = distance * Block.direction_map[side][1]
+				relativex = distance * self.direction[side][0]
+				relativey = distance * self.direction[side][1]
 
 				# cria o cubo
-				new_cube = Cube(self, relativex, relativey, color)
+				new_cube = Cube(self, relativex, relativey, color, side, distance)
 
 				# adiciona-o à lista de cubos
 				cubes.add(new_cube)
@@ -194,11 +207,43 @@ class Block():
 		# loop de desenho
 		for cube in cubes: cube.draw()
 
-			
+
+	def rotate(self, direction):
+		''' rotaciona o bloco '''
+
+		if direction == 'left':
+			single_direction = self.direction.pop()
+			self.direction.insert(0, single_direction)
+			single_shape = self.shape.pop()
+			self.shape.insert(0, single_shape)
+
+		elif direction == 'right':
+			single_direction = self.direction.pop(0)
+			self.direction.append(single_direction)
+			single_shape = self.shape.pop(0)
+			self.shape.append(single_shape)
+
+		shape = self.shape
+
+		print(direction)
+		print(self.borders[2])
+
+		# limites em pixels [cima, direita, baixo, esquerda]
+		self.borders = [(shape[0]+0.5) * self.cube_size, (shape[1]+0.5) * self.cube_size, (shape[2]+0.5) * self.cube_size, (shape[3]+0.5) * self.cube_size]
+
+		self.virtualy = self.originy + self.borders[2]
+
+		print(self.borders[2])
+		print()
+
+		self.update_position(0)
+		self.update_position(1)
 
 
+	def spawn(self):
 
-
+		self.originx = (self.config.block_spawn_pos[0] // self.config.cube_size_coef) * self.cube_size + 1/2 * self.cube_size
+		self.originy = self.config.screen_height - (self.config.block_spawn_pos[1] * self.cube_size + 1/2 * self.cube_size)
 
 
 

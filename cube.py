@@ -14,15 +14,17 @@ from pygame.sprite import Sprite
 class Cube(Sprite):
 	''' descreve os cubos que compõem os blocos '''
 
-	def __init__(self, block, relativex, relativey, color):
+	def __init__(self, block, relativex, relativey, color, side, distance):
 		''' cria um único cubo novo '''
 
 		# define a instância pygame.sprite.Sprite
 		super(Cube, self).__init__()
 
 		# amarra os argumentos à self
+		self.side = side
 		self.block = block
 		self.color = color
+		self.distance = distance
 		self.relativex = relativex
 		self.relativey = relativey
 

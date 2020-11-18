@@ -9,6 +9,9 @@ Módulo principal
 
 import sys
 import pygame
+
+from functions import *
+
 from block import Block
 from config import Config
 from random import randint
@@ -27,18 +30,23 @@ def run():
 	SCREEN = pygame.display.set_mode((SETTINGS.screen_width, SETTINGS.screen_height))
 	pygame.display.set_caption('TETRIS')
 
-	# bandeira da tela de inicio
-	START_SCREEN = True
+	# bandeira d estado de jogo (0: tela de início, 1: jogo, 2: fim de jogo)
+	STATE = 0
 
+	# blocos
+	BLOCKS = [make_random_block(SCREEN, SETTINGS)]
 
 	# loop principal de jogo
 	while True:
 
+		# impede que STATE fique maior que 2
+		STATE %= 3
+
 		# redesenha o plano de fundo e os blocos
 		SCREEN.fill(SETTINGS.bg_color)  
 
-		#tela de inicio
-		if START_SCREEN:
+		# tela de inicio
+		if STATE == 0:
 
 			title_font = pygame.font.SysFont(None, 100)
 			title_text = title_font.render('TETRIS', True, (0,0,255))
@@ -50,17 +58,44 @@ def run():
 			description_width = description_text.get_width()
 			SCREEN.blit(description_text, (SETTINGS.screen_width/2 - description_width/2, SETTINGS.screen_height*(1 - 1/3)))
 
+			spawn = True
+
+		# tela de jogo
+		elif STATE == 1:
+
+			if spawn:
+				BLOCKS.append(make_random_block(SCREEN, SETTINGS))
+				main_block = BLOCKS[-2]
+				demo_block = BLOCKS[-1]
+				main_block.spawn()
+				spawn = False
+
+			# atualiza posição vertical do bloco
+			if main_block.virtualy < SETTINGS.screen_height:
+				main_block.virtualy += SETTINGS.block_speed
+			
+			else: spawn = True
+
+			main_block.update_position(1)
+
+			# pinta os blocos
+			for block in BLOCKS: block.draw()
+
+		# tela de fim de jogo
+		elif STATE == 2: pass
 
 		# observa eventos
 		for event in pygame.event.get():
 
-			# evento de fechamento
 			if event.type == pygame.QUIT: sys.exit()
 
-			#comando para iniciar o jogo
 			if event.type == pygame.KEYDOWN:
 
-				if START_SCREEN and event.key == pygame.K_SPACE: START_SCREEN = False
+				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
+				elif event.key == pygame.K_DOWN and STATE == 1: main_block.rotate('left')
+				elif event.key == pygame.K_UP and STATE == 1: main_block.rotate('right')
+				elif event.key == pygame.K_LEFT and STATE == 1: main_block.originx -= main_block.cube_size
+				elif event.key == pygame.K_RIGHT and STATE == 1: main_block.originx += main_block.cube_size
 
 		# redesenha a tela
 		pygame.display.flip()
