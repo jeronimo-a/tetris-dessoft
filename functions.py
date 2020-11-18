@@ -40,6 +40,17 @@ def get_starting_maximumy(config):
 	return maximumy
 
 
+def grid_builder(x,s,t,u,v):
+        y = x
+        while y<=u*6/7:
+            pygame.draw.line(s, (200,200,200), (t/3.5, u/7+y), (t/1.4, u/7+y), v)
+            y+=x
+        z = x
+        while z <= t*3/7:
+            pygame.draw.line(s, (200,200,200), (t/3.5+z, u), (t/3.5+z, u/7), v)
+            z+=x
+
+
 
 
 
