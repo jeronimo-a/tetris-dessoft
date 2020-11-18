@@ -45,7 +45,7 @@ class Block():
 		self.deltax, self.deltay = int(), int()		# center + delta = origin
 		self.originx, self.originy = int(), int()	# posição do centro do cubo de oridem (para posicionamento na tela)
 		self.averagex, self.averagey = int(), int()	# posição média do bloco (usada para posicionamento do próximo bloco)
-		self.minimuny = dict()						# posições verticais das faces inferiores do bloco
+		self.maximumy = dict()						# posições verticais das faces inferiores do bloco
 
 		# propriedades principais de dimensão
 		self.cube_size = int(config.screen_width * config.cube_size_coef)	# tamanho dos lados dos cubos que compõem o bloco
@@ -76,8 +76,8 @@ class Block():
 		average_deltax = self.averagex - self.centerx
 		average_deltay = self.averagey - self.centery
 
-		# define minimuny a partir de originy e shape
-		self.minimuny = self.get_minimuny()
+		# define maximumy a partir de originy e shape
+		self.maximumy = self.get_maximumy()
 
 		# constrói os objetos Cube
 		self.cubes = self.make_cubes()
@@ -134,8 +134,8 @@ class Block():
 		self.originx = origin[0]
 		self.originy = origin[1]
 
-		# atualiza os valores de minimuny a partir de origin e shape
-		self.minimuny = self.get_minimuny()
+		# atualiza os valores de maximumy a partir de origin e shape
+		self.maximumy = self.get_maximumy()
 
 		# atualiza a posição de cada cubo com base em origin
 		count = 1
@@ -172,8 +172,8 @@ class Block():
 		# verifica a validade dos deltas (ou ambos múltiplos de cube_size, ou nenhum dos dois)
 		deltax_multiple = deltax % self.cube_size == 0
 		deltay_multiple = deltay % self.cube_size == 0
-		if deltay_multiple and not deltax_multiple: deltax = (deltax // self.cube_size) * self.cube_size
-		if deltax_multiple and not deltay_multiple: deltay = (deltay // self.cube_size) * self.cube_size
+		if not deltax_multiple: deltax = (deltax // self.cube_size) * self.cube_size
+		if not deltay_multiple: deltay = (deltay // self.cube_size) * self.cube_size
 
 		return deltax, deltay
 
@@ -204,18 +204,20 @@ class Block():
 		return averagex, averagey
 
 
-	def get_minimuny(self):
-		''' calcula os valores de minimuny a partir de origin e shape '''
+	def get_maximumy(self):
+		''' calcula os valores de maximumy a partir de origin e shape '''
 
-		minimuny = dict()
+		maximumy = dict()
 
-		minimuny[self.originx] = self.originy + self.cube_size * (0.5 + self.shape[2])
+		xpos = round((self.originx - 0.5 * self.cube_size) / self.cube_size)
+
+		maximumy[xpos] = self.originy + self.cube_size * (1.5 + self.shape[2])
 
 		for side in [1,3]:
-			for multiple in range(1, self.shape[side] + 1):
-				minimuny[self.originx + multiple * Block.direction_map[side][0]] = self.originy + 0.5 * self.cube_size
+			for multiplier in range(1, self.shape[side] + 1):
+				maximumy[xpos + multiplier * Block.direction_map[side][0]] = self.originy + 0.5 * self.cube_size
 
-		return minimuny
+		return maximumy
 
 
 	def draw(self):
@@ -230,7 +232,7 @@ class Block():
 		self.centery = int(self.config.screen_height - (self.config.block_spawn_pos[1] + 0.5) * self.cube_size)
 		self.virtualy = float(self.centery)
 
-		self.centerx = int(self.config.block_spawn_pos[0] * self.config.screen_width)
+		self.centerx = int(self.config.block_spawn_pos[0] * self.config.screen_width + 0.5 * self.cube_size)
 
 		self.update()
 

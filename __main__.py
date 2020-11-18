@@ -33,8 +33,14 @@ def run():
 	# bandeira d estado de jogo (0: tela de início, 1: jogo, 2: fim de jogo)
 	STATE = 0
 
-	# blocos
-	BLOCKS = [Block(SCREEN, SETTINGS, [1, 2, 0, 0] , [255,125,0])]
+	# bloco de jogo
+	DEMO_BLOCK = make_random_block(SCREEN, SETTINGS)
+
+	# cubos dos blocos já depositados
+	CUBES = list()
+
+	# posições máximas em função de x
+	MAXIMUMY = get_starting_maximumy(SETTINGS)
 
 	# loop principal de jogo
 	while True:
@@ -63,15 +69,30 @@ def run():
 		# tela de jogo
 		elif STATE == 1:
 
-			main_block = BLOCKS[0]
+			if spawn:
+				new_block = make_random_block(SCREEN, SETTINGS)
+				MAIN_BLOCK = DEMO_BLOCK
+				DEMO_BLOCK = new_block
+				MAIN_BLOCK.spawn()
+				spawn = False
 
-			if spawn: main_block.spawn(); spawn = False
+			for xpos in MAIN_BLOCK.maximumy.keys():
 
-			if main_block.minimuny[main_block.originx] < SETTINGS.screen_height:
-				main_block.virtualy += SETTINGS.block_speed
+				if MAIN_BLOCK.maximumy[xpos] >= SETTINGS.screen_height:
 
-			main_block.update()
-			main_block.draw()
+					spawn = True
+					CUBES += MAIN_BLOCK.cubes
+
+			if not spawn:
+				MAIN_BLOCK.virtualy += SETTINGS.block_speed
+
+
+			MAIN_BLOCK.update()
+			MAIN_BLOCK.draw()
+			DEMO_BLOCK.draw()
+
+			for cube in CUBES:
+				cube.draw()
 
 		# tela de fim de jogo
 		elif STATE == 2: pass
@@ -84,10 +105,10 @@ def run():
 			if event.type == pygame.KEYDOWN:
 
 				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
-				elif event.key == pygame.K_DOWN and STATE == 1: main_block.rotate('left')
-				elif event.key == pygame.K_UP and STATE == 1: main_block.rotate('right')
-				elif event.key == pygame.K_LEFT and STATE == 1: main_block.centerx -= main_block.cube_size
-				elif event.key == pygame.K_RIGHT and STATE == 1: main_block.centerx += main_block.cube_size
+				elif event.key == pygame.K_DOWN and STATE == 1: MAIN_BLOCK.rotate('left')
+				elif event.key == pygame.K_UP and STATE == 1: MAIN_BLOCK.rotate('right')
+				elif event.key == pygame.K_LEFT and STATE == 1: MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
+				elif event.key == pygame.K_RIGHT and STATE == 1: MAIN_BLOCK.centerx += MAIN_BLOCK.cube_size
 
 		# redesenha a tela
 		pygame.display.flip()

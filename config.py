@@ -22,6 +22,6 @@ class Config():
 		self.cube_size_coef = 1/24				# fração da largura da tela
 		self.block_preview_pos = [3/4, 1/4]		# fração do tamanho da tela (posição de amostragem do próximo bloco)
 		self.block_spawn_pos = [1/2, 24]		# [fraçao da arena, altura em relacao ao chão da arena (blocos)]
-		self.block_speed = 1/10
+		self.block_speed = 1/8
 
 
