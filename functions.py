@@ -78,13 +78,13 @@ def build_gamescreen_texts(screen, config):
 
 def build_startscreen_texts(screen, config):
 
-	title_font = pygame.font.SysFont(None, 100)
-	title_text = title_font.render('TETRIS', True, (0,0,255))
+	title_font = pygame.font.SysFont(None, 150)
+	title_text = title_font.render('TETRIS', True, (255,255,255))
 	title_width = title_text.get_width()
 	screen.blit(title_text, (config.screen_width/2 - title_width/2, config.screen_height/3))
 
 	description_font = pygame.font.SysFont(None, 30)
-	description_text = description_font.render('Press SPACE to Start', True, (255,255,0))
+	description_text = description_font.render('Press SPACE to Start', True, (255,255,255))
 	description_width = description_text.get_width()
 	screen.blit(description_text, (config.screen_width/2 - description_width/2, config.screen_height*(1 - 1/3)))
 
