@@ -78,7 +78,7 @@ def run():
 			text_width = SETTINGS.screen_width/2 - text.get_width()/2
 			text_height = SETTINGS.screen_height/24
 			SCREEN.blit(text, (text_width, text_height))
-			SCREEN.blit(text2, (530, 300))
+			SCREEN.blit(text2, (SETTINGS.screen_width * SETTINGS.block_preview_pos[0] - text2.get_width()/2, SETTINGS.screen_width * SETTINGS.block_preview_pos[1] * 4/3))
 
 			# criação do bloco novo caso necessário
 			if spawn:
