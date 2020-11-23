@@ -61,6 +61,34 @@ def grid_builder(screen, config):
 	pygame.draw.line(screen, (255,0,0), (config.screen_width/3.5, config.screen_height), (config.screen_width/1.4, config.screen_height), 4)
 
 
+def build_gamescreen_texts(screen, config):
+
+	# definição dos textos
+	font = pygame.font.SysFont(None, 72)
+	text = font.render('TETRIS', True, (255, 255, 255))
+	font2 = pygame.font.SysFont(None, 36)
+	text2 = font2.render('Next Block', True, (255, 255, 255))
+
+	# insere os textos na tela de jogo
+	text_width = config.screen_width/2 - text.get_width()/2
+	text_height = config.screen_height/24
+	screen.blit(text, (text_width, text_height))
+	screen.blit(text2, (config.screen_width * config.block_preview_pos[0] - text2.get_width()/2, config.screen_width * config.block_preview_pos[1] * 4/3))
+
+
+def build_startscreen_texts(screen, config):
+
+	title_font = pygame.font.SysFont(None, 100)
+	title_text = title_font.render('TETRIS', True, (0,0,255))
+	title_width = title_text.get_width()
+	screen.blit(title_text, (config.screen_width/2 - title_width/2, config.screen_height/3))
+
+	description_font = pygame.font.SysFont(None, 30)
+	description_text = description_font.render('Press SPACE to Start', True, (255,255,0))
+	description_width = description_text.get_width()
+	screen.blit(description_text, (config.screen_width/2 - description_width/2, config.screen_height*(1 - 1/3)))
+
+
 
 
 

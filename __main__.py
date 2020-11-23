@@ -53,32 +53,13 @@ def run():
 		# tela de inicio
 		if STATE == 0:
 
-			title_font = pygame.font.SysFont(None, 100)
-			title_text = title_font.render('TETRIS', True, (0,0,255))
-			title_width = title_text.get_width()
-			SCREEN.blit(title_text, (SETTINGS.screen_width/2 - title_width/2, SETTINGS.screen_height/3))
-
-			description_font = pygame.font.SysFont(None, 30)
-			description_text = description_font.render('Press SPACE to Start', True, (255,255,0))
-			description_width = description_text.get_width()
-			SCREEN.blit(description_text, (SETTINGS.screen_width/2 - description_width/2, SETTINGS.screen_height*(1 - 1/3)))
+			# definição e inserção dos textos
+			build_startscreen_texts(SCREEN, SETTINGS)
 
 			spawn = True
 
 		# tela de jogo
 		elif STATE == 1:
-			
-			# definição dos textos
-			font = pygame.font.SysFont(None, 72)
-			text = font.render('TETRIS', True, (255, 255, 255))
-			font2 = pygame.font.SysFont(None, 36)
-			text2 = font2.render('Next Block', True, (255, 255, 255))
-
-			# insere os textos na tela de jogo
-			text_width = SETTINGS.screen_width/2 - text.get_width()/2
-			text_height = SETTINGS.screen_height/24
-			SCREEN.blit(text, (text_width, text_height))
-			SCREEN.blit(text2, (SETTINGS.screen_width * SETTINGS.block_preview_pos[0] - text2.get_width()/2, SETTINGS.screen_width * SETTINGS.block_preview_pos[1] * 4/3))
 
 			# criação do bloco novo caso necessário
 			if spawn:
@@ -106,6 +87,9 @@ def run():
 
 			# desenha os cubos estáticos
 			for cube in CUBES: cube.draw()
+
+			# definição e inserção dos textos
+			build_gamescreen_texts(SCREEN, SETTINGS)
 
 			# constrói e desenha o grid
 			grid_builder(SCREEN, SETTINGS)
