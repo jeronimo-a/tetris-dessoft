@@ -64,7 +64,7 @@ def grid_builder(screen, config):
 def build_gamescreen_texts(screen, config):
 
 	# definição dos textos
-	font = pygame.font.SysFont(None, 71)
+	font = pygame.font.SysFont(None, 72)
 	text = font.render('TETRIS', True, (255, 255, 255))
 	font2 = pygame.font.SysFont(None, 36)
 	text2 = font2.render('Next Block', True, (255, 255, 255))
