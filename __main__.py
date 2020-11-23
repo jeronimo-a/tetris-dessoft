@@ -16,7 +16,6 @@ from block import Block
 from config import Config
 from random import randint
 
-
 # roda o jogo
 def run():
 
@@ -64,20 +63,24 @@ def run():
 			description_width = description_text.get_width()
 			SCREEN.blit(description_text, (SETTINGS.screen_width/2 - description_width/2, SETTINGS.screen_height*(1 - 1/3)))
 
-			
-
 			spawn = True
 
 		# tela de jogo
 		elif STATE == 1:
 			
+			# definição dos textos
 			font = pygame.font.SysFont(None, 72)
 			text = font.render('TETRIS', True, (255, 255, 255))
 			font2 = pygame.font.SysFont(None, 36)
-			text2 = font2.render('Next Shape', True, (255, 255, 255))
+			text2 = font2.render('Next Block', True, (255, 255, 255))
 
+			# insere os textos na tela de jogo
+			text_width = SETTINGS.screen_width/2 - text.get_width()/2
+			text_height = SETTINGS.screen_height/24
+			SCREEN.blit(text, (text_width, text_height))
+			SCREEN.blit(text2, (530, 300))
 
-
+			# criação do bloco novo caso necessário
 			if spawn:
 				new_block = make_random_block(SCREEN, SETTINGS)
 				MAIN_BLOCK = DEMO_BLOCK
@@ -85,39 +88,27 @@ def run():
 				MAIN_BLOCK.spawn()
 				spawn = False
 
+			# colisões e consequências
 			for xpos in MAIN_BLOCK.maximumy.keys():
-
 				if MAIN_BLOCK.maximumy[xpos] >= SETTINGS.screen_height:
-
 					spawn = True
 					CUBES += MAIN_BLOCK.cubes
 
-			if not spawn:
-				MAIN_BLOCK.virtualy += SETTINGS.block_speed
+			# atualização da posição do bloco ativo
+			if not spawn: MAIN_BLOCK.virtualy += SETTINGS.block_speed
 
-
+			# atualiza as propriedades do bloco principal
 			MAIN_BLOCK.update()
+
+			# desenha os blocos na tela
 			MAIN_BLOCK.draw()
 			DEMO_BLOCK.draw()
 
-			for cube in CUBES:
-				cube.draw()
+			# desenha os cubos estáticos
+			for cube in CUBES: cube.draw()
 
-			# constroi o grid
-			block_size = (SETTINGS.screen_width/1.4 - SETTINGS.screen_width/3.5)/10
-			grid_builder(block_size, SCREEN, SETTINGS.screen_width, SETTINGS.screen_height, 1)
-
-			text_wdt = (SETTINGS.screen_width/2) - (text.get_width()/2)
-			text_hgt = (SETTINGS.screen_height/24)
-
-			SCREEN.blit(text, (text_wdt, text_hgt))
-			SCREEN.blit(text2, (530, 300))
-
-			
-			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/3.5, SETTINGS.screen_height), (SETTINGS.screen_width/3.5, SETTINGS.screen_height/7), 4)
-			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/1.4, SETTINGS.screen_height), (SETTINGS.screen_width/1.4, SETTINGS.screen_height/7), 4)
-			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/3.5, SETTINGS.screen_height/7), (SETTINGS.screen_width/1.4, SETTINGS.screen_height/7), 4)
-			pygame.draw.line(SCREEN, (255,0,0), (SETTINGS.screen_width/3.5, SETTINGS.screen_height), (SETTINGS.screen_width/1.4, SETTINGS.screen_height), 4)
+			# constrói e desenha o grid
+			grid_builder(SCREEN, SETTINGS)
 
 		# tela de fim de jogo
 		elif STATE == 2: pass
@@ -137,7 +128,6 @@ def run():
 
 		# redesenha a tela
 		pygame.display.flip()
-
 
 run()
 

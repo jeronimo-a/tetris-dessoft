@@ -40,15 +40,25 @@ def get_starting_maximumy(config):
 	return maximumy
 
 
-def grid_builder(x,s,t,u,v):
-        y = x
-        while y<=u*6/7:
-            pygame.draw.line(s, (200,200,200), (t/3.5, u/7+y), (t/1.4, u/7+y), v)
-            y+=x
-        z = x
-        while z <= t*3/7:
-            pygame.draw.line(s, (200,200,200), (t/3.5+z, u), (t/3.5+z, u/7), v)
-            z+=x
+def grid_builder(screen, config):
+
+	block_size = (config.screen_width/1.4 - config.screen_width/3.5) / 10
+	v = 1
+
+	y = block_size
+	while y <= config.screen_height * 6/7:
+		pygame.draw.line(screen, (200,200,200), (config.screen_width/3.5, config.screen_height/7 + y), (config.screen_width/1.4, config.screen_height/7 + y), v)
+		y += block_size
+
+	z = block_size
+	while z <= config.screen_width * 3/7:
+		pygame.draw.line(screen, (200,200,200), (config.screen_width/3.5 + z, config.screen_height), (config.screen_width/3.5 + z, config.screen_height/7), v)
+		z += block_size
+
+	pygame.draw.line(screen, (255,0,0), (config.screen_width/3.5, config.screen_height), (config.screen_width/3.5, config.screen_height/7), 4)
+	pygame.draw.line(screen, (255,0,0), (config.screen_width/1.4, config.screen_height), (config.screen_width/1.4, config.screen_height/7), 4)
+	pygame.draw.line(screen, (255,0,0), (config.screen_width/3.5, config.screen_height/7), (config.screen_width/1.4, config.screen_height/7), 4)
+	pygame.draw.line(screen, (255,0,0), (config.screen_width/3.5, config.screen_height), (config.screen_width/1.4, config.screen_height), 4)
 
 
 
