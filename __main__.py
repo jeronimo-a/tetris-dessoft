@@ -73,7 +73,7 @@ def run():
 				spawn = False
 
 			# colisões e consequências
-			if MAIN_BLOCK.getMaximumGridY() == SETTINGS.grid_height - 1:
+			if not MAIN_BLOCK.canMoveDown(BITMAP):
 				MAIN_BLOCK.ylocked = True
 
 			# verifica se o bloco ainda está vivo
@@ -116,8 +116,8 @@ def run():
 				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
 				elif event.key == pygame.K_DOWN and STATE == 1: MAIN_BLOCK.rotate('left')
 				elif event.key == pygame.K_UP and STATE == 1: MAIN_BLOCK.rotate('right')
-				elif event.key == pygame.K_LEFT and STATE == 1 and MAIN_BLOCK.getMinimumGridX() > 0: MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
-				elif event.key == pygame.K_RIGHT and STATE == 1 and MAIN_BLOCK.getMaximumGridX() < SETTINGS.grid_width - 1: MAIN_BLOCK.centerx += MAIN_BLOCK.cube_size
+				elif event.key == pygame.K_LEFT and STATE == 1 and MAIN_BLOCK.canMoveLeft(BITMAP): MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
+				elif event.key == pygame.K_RIGHT and STATE == 1 and MAIN_BLOCK.canMoveRight(BITMAP): MAIN_BLOCK.centerx += MAIN_BLOCK.cube_size
 
 		# redesenha a tela
 		pygame.display.flip()

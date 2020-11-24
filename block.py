@@ -246,6 +246,42 @@ class Block():
 		self.update()
 
 
+	def canMoveDown(self, bitmap):
+		''' retorna um bool a partir da posição do bloco e do bitmap do grid '''
+
+		if self.getMaximumGridY() == self.config.grid_height - 1: return False
+
+		for grid_pos in self.grid_positions:
+			blocked = bitmap[grid_pos[1] + 1][grid_pos[0]]
+			if blocked: return False
+
+		return True
+
+
+	def canMoveLeft(self, bitmap):
+		''' retorna um bool a partir da posição do bloco e do bitmap do grid '''
+
+		if self.getMinimumGridX() <= 0: return False
+
+		for grid_pos in self.grid_positions:
+			blocked = bitmap[grid_pos[1]][grid_pos[0] - 1]
+			if blocked: return False
+
+		return True
+
+
+	def canMoveRight(self, bitmap):
+		''' retorna um bool a partir da posição do bloco e do bitmap do grid '''
+
+		if self.getMaximumGridX() >= self.config.grid_width - 1: return False
+
+		for grid_pos in self.grid_positions:
+			blocked = bitmap[grid_pos[1]][grid_pos[0] + 1]
+			if blocked: return False
+
+		return True
+
+
 	def getMinimumGridX(self):
 		''' retorna a posição x no grid mínima do bloco '''
 
