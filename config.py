@@ -24,4 +24,16 @@ class Config():
 		self.block_spawn_pos = [1/2, 24]		# [fraçao da arena, altura em relacao ao chão da arena (blocos)]
 		self.block_speed = 1/6
 
+		# configurações do grid
+		self.grid_width = 10
+		self.grid_height = 20
+		self.line_thickness = 4
+		self.top_border = self.screen_height / 7
+		self.left_border = self.screen_width / 3.5
+		self.right_border = self.screen_width / 1.4
+
+
+
+
+
 

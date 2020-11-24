@@ -42,23 +42,23 @@ def get_starting_maximumy(config):
 
 def grid_builder(screen, config):
 
-	block_size = (config.screen_width/1.4 - config.screen_width/3.5) / 10
+	block_size = (config.right_border - config.left_border) / 10
 	v = 1
 
 	y = block_size
 	while y <= config.screen_height * 6/7:
-		pygame.draw.line(screen, (200,200,200), (config.screen_width/3.5, config.screen_height/7 + y), (config.screen_width/1.4, config.screen_height/7 + y), v)
+		pygame.draw.line(screen, (200,200,200), (config.left_border, config.top_border + y), (config.right_border, config.top_border + y), v)
 		y += block_size
 
 	z = block_size
 	while z <= config.screen_width * 3/7:
-		pygame.draw.line(screen, (200,200,200), (config.screen_width/3.5 + z, config.screen_height), (config.screen_width/3.5 + z, config.screen_height/7), v)
+		pygame.draw.line(screen, (200,200,200), (config.left_border + z, config.screen_height), (config.left_border + z, config.top_border), v)
 		z += block_size
 
-	pygame.draw.line(screen, (255,0,0), (config.screen_width/3.5, config.screen_height), (config.screen_width/3.5, config.screen_height/7), 4)
-	pygame.draw.line(screen, (255,0,0), (config.screen_width/1.4, config.screen_height), (config.screen_width/1.4, config.screen_height/7), 4)
-	pygame.draw.line(screen, (255,0,0), (config.screen_width/3.5, config.screen_height/7), (config.screen_width/1.4, config.screen_height/7), 4)
-	pygame.draw.line(screen, (255,0,0), (config.screen_width/3.5, config.screen_height), (config.screen_width/1.4, config.screen_height), 4)
+	pygame.draw.line(screen, (255,0,0), (config.left_border, config.screen_height), (config.left_border, config.top_border), config.line_thickness)
+	pygame.draw.line(screen, (255,0,0), (config.right_border, config.screen_height), (config.right_border, config.top_border), config.line_thickness)
+	pygame.draw.line(screen, (255,0,0), (config.left_border, config.top_border), (config.right_border, config.top_border), config.line_thickness)
+	pygame.draw.line(screen, (255,0,0), (config.left_border, config.screen_height), (config.right_border, config.screen_height), config.line_thickness)
 
 
 def build_gamescreen_texts(screen, config):
