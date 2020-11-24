@@ -89,6 +89,27 @@ def build_startscreen_texts(screen, config):
 	screen.blit(description_text, (config.screen_width/2 - description_width/2, config.screen_height*(1 - 1/3)))
 
 
+def build_bitmap(settings):
+	''' constrói uma lista de listas que representa a matrix do grid '''
+
+	bitmap = list()
+
+	for _ in range(settings.grid_height):
+		line = list()
+
+		for _ in range(settings.grid_width):
+			line.append(False)
+
+		bitmap.append(line)
+
+	return bitmap
+
+
+
+
+
+
+
 
 
 

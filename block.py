@@ -37,15 +37,19 @@ class Block():
 		# propriedades pygame
 		self.cubes = list()		# lista dos cubos
 
+		# propriedade de utilidade
+		self.is_dead = False
+
 		# propriedades de movimento
 		self.virtualy = float()		# posição vertical que varia uniformemente (center varia em múltiplos de cube_size) (é a manipulada por fora)
+		self.ylocked = False		# caso True, o bloco não é atualizada a posição y do bloco
 
 		# propriedades principais de posição
 		self.centerx, self.centery = 0, 0			# posição do centro de rotação (centery depende de virtualy) (apenas centerx é manipulado)
 		self.deltax, self.deltay = int(), int()		# center + delta = origin
 		self.originx, self.originy = int(), int()	# posição do centro do cubo de oridem (para posicionamento na tela)
 		self.averagex, self.averagey = int(), int()	# posição média do bloco (usada para posicionamento do próximo bloco)
-		self.maximumy = dict()						# posições verticais das faces inferiores do bloco
+		self.grid_positions = list()				# posições de todos os cubos no grid
 
 		# propriedades principais de dimensão
 		self.cube_size = int(config.screen_width * config.cube_size_coef)	# tamanho dos lados dos cubos que compõem o bloco
@@ -76,11 +80,11 @@ class Block():
 		average_deltax = self.averagex - self.centerx
 		average_deltay = self.averagey - self.centery
 
-		# define maximumy a partir de originy e shape
-		self.maximumy = self.get_maximumy()
-
 		# constrói os objetos Cube
 		self.cubes = self.make_cubes()
+
+		# constrói a lista de posições grid
+		for _ in self.cubes: self.grid_positions.append([0,0])
 
 		# coloca o bloco na posição de amostragem alterando o valor de average
 		self.averagex = config.block_preview_pos[0] * config.screen_width
@@ -116,8 +120,9 @@ class Block():
 		''' atualiza as posições conforme virtualy e centerx '''
 
 		# atualiza centery a partir de virtualy
+		self.is_dead = (self.virtualy - self.centery) > 2 * self.cube_size
 		update_centery = (self.virtualy - self.centery) > self.cube_size
-		if update_centery: self.centery += self.cube_size
+		if update_centery and not self.ylocked: self.centery += self.cube_size
 
 		# atualiza as dimensões
 		dimensions = self.get_dimensions()
@@ -134,8 +139,10 @@ class Block():
 		self.originx = origin[0]
 		self.originy = origin[1]
 
-		# atualiza os valores de maximumy a partir de origin e shape
-		self.maximumy = self.get_maximumy()
+		# atualiza a posição do bloco de origem no grid
+		gridx = int((self.originx - self.config.left_border) / self.cube_size)
+		gridy = int((self.originy - self.config.top_border) / self.cube_size)
+		self.grid_positions[0] = [gridx, gridy]
 
 		# atualiza a posição de cada cubo com base em origin
 		count = 1
@@ -146,8 +153,12 @@ class Block():
 		for side in range(4):
 
 			for multiplier in range(1, self.shape[side] + 1):
-				self.cubes[count].rect.centerx = self.originx + multiplier * Block.direction_map[side][0] * self.cube_size
-				self.cubes[count].rect.centery = self.originy + multiplier * Block.direction_map[side][1] * self.cube_size
+				grid_deltax = multiplier * Block.direction_map[side][0]
+				grid_deltay = multiplier * Block.direction_map[side][1]
+				self.grid_positions[count][0] = gridx + grid_deltax
+				self.grid_positions[count][1] = gridy + grid_deltay
+				self.cubes[count].rect.centerx = self.originx + grid_deltax * self.cube_size
+				self.cubes[count].rect.centery = self.originy + grid_deltay * self.cube_size
 				count += 1
 
 
@@ -204,22 +215,6 @@ class Block():
 		return averagex, averagey
 
 
-	def get_maximumy(self):
-		''' calcula os valores de maximumy a partir de origin e shape '''
-
-		maximumy = dict()
-
-		xpos = round((self.originx - 0.5 * self.cube_size) / self.cube_size)
-
-		maximumy[xpos] = self.originy + self.cube_size * (1.5 + self.shape[2])
-
-		for side in [1,3]:
-			for multiplier in range(1, self.shape[side] + 1):
-				maximumy[xpos + multiplier * Block.direction_map[side][0]] = self.originy + 0.5 * self.cube_size
-
-		return maximumy
-
-
 	def draw(self):
 		''' desenha todos os cubos em screen '''
 
@@ -249,6 +244,39 @@ class Block():
 			self.shape.append(tmp)
 
 		self.update()
+
+
+	def getMinimumGridX(self):
+		''' retorna a posição x no grid mínima do bloco '''
+
+		minimumx = self.grid_positions[0][0]
+
+		for grid_pos in self.grid_positions[1:]:
+			if grid_pos[0] < minimumx: minimumx = grid_pos[0]
+
+		return minimumx
+
+
+	def getMaximumGridX(self):
+		''' retorna a posição x no grid mínima do bloco '''
+
+		maximux = self.grid_positions[0][0]
+
+		for grid_pos in self.grid_positions[1:]:
+			if grid_pos[0] > maximux: maximux = grid_pos[0]
+
+		return maximux
+
+
+	def getMaximumGridY(self):
+		''' retorna a posição x no grid mínima do bloco '''
+
+		maximumy = self.grid_positions[0][1]
+
+		for grid_pos in self.grid_positions[1:]:
+			if grid_pos[1] > maximumy: maximumy = grid_pos[1]
+
+		return maximumy
 
 
 

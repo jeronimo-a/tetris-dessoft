@@ -38,6 +38,9 @@ def run():
 	# cubos dos blocos já depositados
 	CUBES = list()
 
+	# bitmap das posições do grid ocupadas
+	BITMAP = build_bitmap(SETTINGS)
+
 	# posições máximas em função de x
 	MAXIMUMY = get_starting_maximumy(SETTINGS)
 
@@ -70,15 +73,21 @@ def run():
 				spawn = False
 
 			# colisões e consequências
-			for xpos in MAIN_BLOCK.maximumy.keys():
-				if MAIN_BLOCK.maximumy[xpos] >= SETTINGS.screen_height:
-					spawn = True
-					CUBES += MAIN_BLOCK.cubes
+			if MAIN_BLOCK.getMaximumGridY() == SETTINGS.grid_height - 1:
+				MAIN_BLOCK.ylocked = True
+
+			# verifica se o bloco ainda está vivo
+			if MAIN_BLOCK.is_dead: spawn = True
 
 			# atualização da posição do bloco ativo
 			if not spawn: MAIN_BLOCK.virtualy += SETTINGS.block_speed
 
-			# atualiza as propriedades do bloco principal
+			if spawn:
+				CUBES += MAIN_BLOCK.cubes
+				for grid_pos in MAIN_BLOCK.grid_positions:
+					BITMAP[grid_pos[1]][grid_pos[0]] = True
+
+			# atualiza as propriedades do bloco
 			MAIN_BLOCK.update()
 
 			# desenha os blocos na tela
@@ -107,8 +116,8 @@ def run():
 				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
 				elif event.key == pygame.K_DOWN and STATE == 1: MAIN_BLOCK.rotate('left')
 				elif event.key == pygame.K_UP and STATE == 1: MAIN_BLOCK.rotate('right')
-				elif event.key == pygame.K_LEFT and STATE == 1: MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
-				elif event.key == pygame.K_RIGHT and STATE == 1: MAIN_BLOCK.centerx += MAIN_BLOCK.cube_size
+				elif event.key == pygame.K_LEFT and STATE == 1 and MAIN_BLOCK.getMinimumGridX() > 0: MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
+				elif event.key == pygame.K_RIGHT and STATE == 1 and MAIN_BLOCK.getMaximumGridX() < SETTINGS.grid_width - 1: MAIN_BLOCK.centerx += MAIN_BLOCK.cube_size
 
 		# redesenha a tela
 		pygame.display.flip()
