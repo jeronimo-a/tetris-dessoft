@@ -32,6 +32,9 @@ def run():
 	# bandeira d estado de jogo (0: tela de início, 1: jogo, 2: fim de jogo)
 	STATE = 0
 
+	# pontuação da rodada
+	PONTUACAO = 0
+
 	# bloco de jogo
 	DEMO_BLOCK = make_random_block(SCREEN, SETTINGS)
 
@@ -61,6 +64,9 @@ def run():
 		# tela de jogo
 		elif STATE == 1:
 
+			# definição e inserção dos textos
+			build_gamescreen_texts(SCREEN, SETTINGS, PONTUACAO)
+
 			# criação do bloco novo caso necessário
 			if spawn:
 				new_block = make_random_block(SCREEN, SETTINGS)
@@ -86,7 +92,7 @@ def run():
 			# atualiza as propriedades do bloco
 			MAIN_BLOCK.update()
 
-			# adição dos cubos do bloco ativo à lista dos cubos, alteração do bitmap e verificação de pontuação
+			# adição dos cubos do bloco ativo à lista dos cubos, alteração do bitmap e verificação de pontuação/fim de jogo
 			if spawn:
 
 				# adiciona os cubos do bloco ao bitmap
@@ -116,6 +122,13 @@ def run():
 						cube.grid_pos = [col, line]
 						cube.update()
 
+				# verifica se houve game over
+				game_over = any(BITMAP[SETTINGS.grid_height - SETTINGS.block_limit - 1])
+				if game_over: STATE = 2
+				else:
+					PONTUACAO += len(MAIN_BLOCK.cubes)
+					PONTUACAO += len(complete_lines) ** 2 * 10
+
 			# desenha os blocos na tela
 			MAIN_BLOCK.draw()
 			DEMO_BLOCK.draw()
@@ -124,9 +137,6 @@ def run():
 			for line in BITMAP:
 				for cube in line:
 					if cube: cube.draw()
-
-			# definição e inserção dos textos
-			build_gamescreen_texts(SCREEN, SETTINGS)
 
 			# constrói e desenha o grid
 			grid_builder(SCREEN, SETTINGS)

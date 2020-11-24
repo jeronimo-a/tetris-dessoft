@@ -24,6 +24,9 @@ class Config():
 		self.block_spawn_pos = [1/2, 18]		# [fraçao da arena, altura em relacao ao chão da arena (blocos)]
 		self.block_speed = 1/4
 
+		# configuração de texto
+		self.score_position = [1 - self.block_preview_pos[0], self.block_preview_pos[1]]
+
 		# configurações do grid
 		self.grid_width = 10
 		self.grid_height = 20
@@ -31,6 +34,8 @@ class Config():
 		self.top_border = self.screen_height / 7
 		self.left_border = self.screen_width / 3.5
 		self.right_border = self.screen_width / 1.4
+		self.block_limit = self.grid_height - 5
+		self.block_limit_line = self.screen_height - self.block_limit * self.cube_size_coef * self.screen_width
 
 		# formas dos blocos
 		self.shapes = [

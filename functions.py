@@ -57,25 +57,30 @@ def grid_builder(screen, config):
 		pygame.draw.line(screen, (200,200,200), (config.left_border + z, config.screen_height), (config.left_border + z, config.top_border), v)
 		z += block_size
 
+	pygame.draw.line(screen, (0,0,255), (config.left_border, config.block_limit_line), (config.right_border, config.block_limit_line), config.line_thickness)
 	pygame.draw.line(screen, (255,0,0), (config.left_border, config.screen_height), (config.left_border, config.top_border), config.line_thickness)
 	pygame.draw.line(screen, (255,0,0), (config.right_border, config.screen_height), (config.right_border, config.top_border), config.line_thickness)
 	pygame.draw.line(screen, (255,0,0), (config.left_border, config.top_border), (config.right_border, config.top_border), config.line_thickness)
 	pygame.draw.line(screen, (255,0,0), (config.left_border, config.screen_height), (config.right_border, config.screen_height), config.line_thickness)
 
 
-def build_gamescreen_texts(screen, config):
+def build_gamescreen_texts(screen, config, pontuacao):
 
 	# definição dos textos
 	font = pygame.font.SysFont(None, 72)
 	text = font.render('TETRIS', True, (255, 255, 255))
 	font2 = pygame.font.SysFont(None, 36)
-	text2 = font2.render('Next Block', True, (255, 255, 255))
+	text2 = font2.render('Próximo bloco', True, (255, 255, 255))
+	text3 = font2.render('Pontuação', True, (255, 255, 255))
+	text4 = font2.render(str(pontuacao), True, (255, 255, 255))
 
 	# insere os textos na tela de jogo
 	text_width = config.screen_width/2 - text.get_width()/2
 	text_height = config.screen_height/24
 	screen.blit(text, (text_width, text_height))
-	screen.blit(text2, (config.screen_width * config.block_preview_pos[0] - text2.get_width()/2, config.screen_width * config.block_preview_pos[1] * 4/3))
+	screen.blit(text2, (config.screen_width * config.block_preview_pos[0] - text2.get_width()/2, config.screen_height * config.block_preview_pos[1] * 4/3))
+	screen.blit(text3, (config.screen_width * config.score_position[0] - text3.get_width()/2, config.screen_height * config.score_position[1] * 4/3))
+	screen.blit(text4, (config.screen_width * config.score_position[0] - text4.get_width()/2, config.screen_height * config.score_position[1] * 4/3 + text3.get_height()))
 
 
 def build_startscreen_texts(screen, config):
