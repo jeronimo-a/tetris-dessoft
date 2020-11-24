@@ -64,7 +64,7 @@ def grid_builder(screen, config):
 	pygame.draw.line(screen, (255,0,0), (config.left_border, config.screen_height), (config.right_border, config.screen_height), config.line_thickness)
 
 
-def build_gamescreen_texts(screen, config, pontuacao):
+def build_gamescreen_texts(screen, config, score):
 
 	# definição dos textos
 	font = pygame.font.SysFont(None, 72)
@@ -72,7 +72,7 @@ def build_gamescreen_texts(screen, config, pontuacao):
 	font2 = pygame.font.SysFont(None, 36)
 	text2 = font2.render('Próximo bloco', True, (255, 255, 255))
 	text3 = font2.render('Pontuação', True, (255, 255, 255))
-	text4 = font2.render(str(pontuacao), True, (255, 255, 255))
+	text4 = font2.render(str(score), True, (255, 255, 255))
 
 	# insere os textos na tela de jogo
 	text_width = config.screen_width/2 - text.get_width()/2

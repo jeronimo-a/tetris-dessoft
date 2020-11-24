@@ -33,7 +33,7 @@ def run():
 	STATE = 0
 
 	# pontuação da rodada
-	PONTUACAO = 0
+	SCORE = 0
 
 	# bloco de jogo
 	DEMO_BLOCK = make_random_block(SCREEN, SETTINGS)
@@ -65,7 +65,7 @@ def run():
 		elif STATE == 1:
 
 			# definição e inserção dos textos
-			build_gamescreen_texts(SCREEN, SETTINGS, PONTUACAO)
+			build_gamescreen_texts(SCREEN, SETTINGS, SCORE)
 
 			# criação do bloco novo caso necessário
 			if spawn:
@@ -87,7 +87,7 @@ def run():
 			if MAIN_BLOCK.is_dead: spawn = True
 
 			# atualização da posição do bloco ativo
-			if not spawn: MAIN_BLOCK.virtualy += SETTINGS.block_speed
+			if not spawn: MAIN_BLOCK.virtualy += SETTINGS.block_speed * (SCORE + 300) / 300
 
 			# atualiza as propriedades do bloco
 			MAIN_BLOCK.update()
@@ -115,10 +115,12 @@ def run():
 					BITMAP.insert(0, new_line)
 
 				# atualiza a posição dos cubos
+				empty = True
 				for line in range(len(BITMAP)):
 					for col in range(len(BITMAP[line])):
 						cube = BITMAP[line][col]
 						if not cube: continue
+						empty = False
 						cube.grid_pos = [col, line]
 						cube.update()
 
@@ -126,8 +128,9 @@ def run():
 				game_over = any(BITMAP[SETTINGS.grid_height - SETTINGS.block_limit - 1])
 				if game_over: STATE = 2
 				else:
-					PONTUACAO += len(MAIN_BLOCK.cubes)
-					PONTUACAO += len(complete_lines) ** 2 * 10
+					SCORE += int(len(MAIN_BLOCK.cubes) * (SCORE + 300) / 300)
+					SCORE += int(len(complete_lines) ** 2 * 10 * (SCORE + 300) / 300)
+					if empty: SCORE = int(SCORE * 1.1 * (SCORE + 300) / 300)
 
 			# desenha os blocos na tela
 			MAIN_BLOCK.draw()
