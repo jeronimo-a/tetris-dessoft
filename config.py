@@ -32,6 +32,16 @@ class Config():
 		self.left_border = self.screen_width / 3.5
 		self.right_border = self.screen_width / 1.4
 
+		# formas dos blocos
+		self.shapes = [
+			[0,2,1,0],
+			[1,2,0,0],
+			[0,1,0,2],
+			[0,2,0,1],
+			[0,1,0,1],
+			[0,1,0,1]
+		]
+
 
 
 

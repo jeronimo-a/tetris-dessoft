@@ -10,7 +10,7 @@ Módulo de funções utilizadas recorrentemente
 import sys
 import pygame
 
-from random import randint
+from random import randint, choice
 from block import Block
 
 def make_random_block(screen, config):
@@ -22,14 +22,8 @@ def make_random_block(screen, config):
 		r, g, b = randint(0,255), randint(0,255), randint(0,255)
 
 	color = (r, g, b)
-	shape = [0, 0, 0, 0]
-
-	while sum(shape) < 5 and max(shape) < 2:
-
-		if 0 not in shape:
-			shape[randint(0,3)] = 0
-
-		shape[randint(0,3)] += randint(0,1)
+	
+	shape = choice(config.shapes)
 
 	block = Block(screen, config, shape, color)
 
