@@ -76,6 +76,9 @@ def run():
 			if not MAIN_BLOCK.canMoveDown(BITMAP):
 				MAIN_BLOCK.ylocked = True
 
+			if MAIN_BLOCK.canMoveDown(BITMAP) and MAIN_BLOCK.ylocked:
+				MAIN_BLOCK.ylocked = False
+
 			# verifica se o bloco ainda está vivo
 			if MAIN_BLOCK.is_dead: spawn = True
 
