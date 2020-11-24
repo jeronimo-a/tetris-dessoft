@@ -140,8 +140,11 @@ class Block():
 		self.originy = origin[1]
 
 		# atualiza a posição do bloco de origem no grid
-		gridx = int((self.originx - self.config.left_border) / self.cube_size)
-		gridy = int((self.originy - self.config.top_border) / self.cube_size)
+		deltax = self.originx - self.config.left_border
+		deltay = self.originy - self.config.top_border
+		gridx = int(deltax / self.cube_size)
+		gridy = int(deltay / self.cube_size)
+		if deltax < 0: gridx -= 1
 		self.grid_positions[0] = [gridx, gridy]
 
 		# atualiza a posição de cada cubo com base em origin
@@ -236,17 +239,28 @@ class Block():
 		''' rotaciona o bloco mexendo na ordem dos elementos em shape '''
 
 		if direction == 'right':
+
 			tmp = self.shape.pop()
 			self.shape.insert(0, tmp)
 			self.update()
+
 			if self.overlapping(bitmap):
 				self.rotate('left', bitmap)
 
+			elif self.offTheGrid():
+				self.rotate('left', bitmap)
+
+
 		elif direction == 'left':
+
 			tmp = self.shape.pop(0)
 			self.shape.append(tmp)
 			self.update()
+
 			if self.overlapping(bitmap):
+				self.rotate('right', bitmap)
+
+			elif self.offTheGrid():
 				self.rotate('right', bitmap)
 
 
@@ -330,6 +344,15 @@ class Block():
 			if overlap: return True
 
 		return  False
+
+
+	def offTheGrid(self):
+		''' determina se parte do bloco está pra fora do grid '''
+
+		if self.getMinimumGridX() < 0: return True
+		if self.getMaximumGridX() > self.config.grid_width - 1: return True
+
+		return False
 
 
 
