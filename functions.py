@@ -16,7 +16,12 @@ from block import Block
 def make_random_block(screen, config):
 	''' faz um bloco com características aleatórias '''
 
-	color = (randint(0,255), randint(0,255), randint(0,255))
+	r, g, b = 0, 0, 0
+
+	while sum([r,g,b]) < 255:
+		r, g, b = randint(0,255), randint(0,255), randint(0,255)
+
+	color = (r, g, b)
 	shape = [0, 0, 0, 0]
 
 	while sum(shape) < 5 and max(shape) < 2:

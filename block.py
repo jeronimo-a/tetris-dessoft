@@ -351,6 +351,7 @@ class Block():
 
 		if self.getMinimumGridX() < 0: return True
 		if self.getMaximumGridX() > self.config.grid_width - 1: return True
+		if self.getMaximumGridY() > self.config.grid_height - 1: return True
 
 		return False
 
