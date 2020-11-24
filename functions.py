@@ -83,7 +83,7 @@ def build_gamescreen_texts(screen, config, score):
 	screen.blit(text4, (config.screen_width * config.score_position[0] - text4.get_width()/2, config.screen_height * config.score_position[1] * 4/3 + text3.get_height()))
 
 
-def build_startscreen_texts(screen, config):
+def build_startscreen_texts(screen, config, highscore):
 
 	title_font = pygame.font.SysFont(None, 200)
 	title_text = title_font.render('TETRIS', True, (255,255,255))
@@ -91,9 +91,18 @@ def build_startscreen_texts(screen, config):
 	screen.blit(title_text, (config.screen_width/2 - title_width/2, config.screen_height/3))
 
 	description_font = pygame.font.SysFont(None, 50)
-	description_text = description_font.render('Press SPACE to Start', True, (255,255,255))
+	description_text = description_font.render('Aperte ESPAÇO para Jogar', True, (255,255,255))
 	description_width = description_text.get_width()
-	screen.blit(description_text, (config.screen_width/2 - description_width/2, config.screen_height*(1 - 1/3)))
+	screen.blit(description_text, (config.screen_width/2 - description_width/2, config.screen_height * (1 - 1/3)))
+
+	highscore_font = description_font
+	highscore_text = highscore_font.render('Recorde:', True, (255,255,255))
+	score_text = highscore_font.render(str(highscore), True, (255,255,255))
+	highscore_width = highscore_text.get_width()
+	highscore_height = highscore_text.get_height()
+	score_width = score_text.get_width()
+	screen.blit(highscore_text, (config.screen_width/2 - highscore_width/2, config.screen_height * (1 - 1/5)))
+	screen.blit(score_text, (config.screen_width/2 - score_width/2, config.screen_height * (1 - 1/5) + highscore_height))
 
 
 def build_bitmap(settings):

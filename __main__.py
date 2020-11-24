@@ -7,7 +7,9 @@ Módulo principal
 
 '''
 
+import os
 import sys
+import json
 import pygame
 
 from functions import *
@@ -18,6 +20,15 @@ from random import randint
 
 # roda o jogo
 def run():
+
+	with open('highscore.json') as json_file:
+		DATA = json.load(json_file)
+
+	try: HIGHSCORE = int(DATA['highscore'])
+	except:
+		print('here')
+		DATA['highscore'] = 0
+		HIGHSCORE = DATA['highscore']
 
 	# construção das configurações
 	SETTINGS = Config()
@@ -47,6 +58,8 @@ def run():
 	# loop principal de jogo
 	while True:
 
+		quitting = False
+
 		# impede que STATE fique maior que 2
 		STATE %= 3
 
@@ -57,7 +70,7 @@ def run():
 		if STATE == 0:
 
 			# definição e inserção dos textos
-			build_startscreen_texts(SCREEN, SETTINGS)
+			build_startscreen_texts(SCREEN, SETTINGS, HIGHSCORE)
 
 			spawn = True
 
@@ -145,12 +158,18 @@ def run():
 			grid_builder(SCREEN, SETTINGS)
 
 		# tela de fim de jogo
-		elif STATE == 2: pass
+		elif STATE == 2:
+
+			if SCORE > HIGHSCORE:
+				DATA['highscore'] = SCORE
+
 
 		# observa eventos
 		for event in pygame.event.get():
 
-			if event.type == pygame.QUIT: sys.exit()
+			if event.type == pygame.QUIT:
+				quitting = True
+				break
 
 			if event.type == pygame.KEYDOWN:
 
@@ -162,6 +181,11 @@ def run():
 
 		# redesenha a tela
 		pygame.display.flip()
+
+		if quitting: break
+
+	with open('highscore.json','w') as json_file:
+		json.dump(DATA, json_file)
 
 run()
 
