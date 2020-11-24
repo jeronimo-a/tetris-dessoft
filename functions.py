@@ -26,6 +26,9 @@ def make_random_block(screen, config):
 
 	while sum(shape) < 5 and max(shape) < 2:
 
+		if 0 not in shape:
+			shape[randint(0,3)] = 0
+
 		shape[randint(0,3)] += randint(0,1)
 
 	block = Block(screen, config, shape, color)

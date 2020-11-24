@@ -24,11 +24,22 @@ class Cube(Sprite):
 		self.block = block
 
 		# rouba propriedades de block
+		self.size = block.cube_size
 		self.color = block.color
 		self.screen = block.screen
+		self.config = block.config
 
 		# define o objeto Rect do cubo (propriedade de Sprite)
-		self.rect = pygame.Rect(0, 0, block.cube_size, block.cube_size)
+		self.rect = pygame.Rect(0, 0, self.size, self.size)
+
+		self.grid_pos = [0, 0]
+
+
+	def update(self):
+		''' updates the cube's position from its grid pos '''
+
+		self.rect.top = self.grid_pos[1] * self.size + self.config.top_border
+		self.rect.left = self.grid_pos[0] * self.size + self.config.left_border
 
 
 	def draw(self):

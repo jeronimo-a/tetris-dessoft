@@ -35,10 +35,7 @@ def run():
 	# bloco de jogo
 	DEMO_BLOCK = make_random_block(SCREEN, SETTINGS)
 
-	# cubos dos blocos já depositados
-	CUBES = list()
-
-	# bitmap das posições do grid ocupadas
+	# bitmap das posições do grid ocupadas (guarda os cubes dos blocos já depositados no fundo)
 	BITMAP = build_bitmap(SETTINGS)
 
 	# posições máximas em função de x
@@ -76,6 +73,7 @@ def run():
 			if not MAIN_BLOCK.canMoveDown(BITMAP):
 				MAIN_BLOCK.ylocked = True
 
+			# possibilita a retomagem do movimento caso seja possível
 			if MAIN_BLOCK.canMoveDown(BITMAP) and MAIN_BLOCK.ylocked:
 				MAIN_BLOCK.ylocked = False
 
@@ -85,20 +83,47 @@ def run():
 			# atualização da posição do bloco ativo
 			if not spawn: MAIN_BLOCK.virtualy += SETTINGS.block_speed
 
-			if spawn:
-				CUBES += MAIN_BLOCK.cubes
-				for grid_pos in MAIN_BLOCK.grid_positions:
-					BITMAP[grid_pos[1]][grid_pos[0]] = True
-
 			# atualiza as propriedades do bloco
 			MAIN_BLOCK.update()
+
+			# adição dos cubos do bloco ativo à lista dos cubos, alteração do bitmap e verificação de pontuação
+			if spawn:
+
+				# adiciona os cubos do bloco ao bitmap
+				count = 0
+				for grid_pos in MAIN_BLOCK.grid_positions:
+					BITMAP[grid_pos[1]][grid_pos[0]] = MAIN_BLOCK.cubes[count]
+					count += 1
+
+				# verifica se há linhas completas
+				complete_lines = list()
+				count = 0
+				for line in BITMAP:
+					if all(line): complete_lines.append(count)
+					count += 1
+
+				# remove as linhas completas
+				for line in complete_lines:
+					BITMAP[line] = [False] * SETTINGS.grid_width
+					new_line = BITMAP.pop(line)
+					BITMAP.insert(0, new_line)
+
+				# atualiza a posição dos cubos
+				for line in range(len(BITMAP)):
+					for col in range(len(BITMAP[line])):
+						cube = BITMAP[line][col]
+						if not cube: continue
+						cube.grid_pos = [col, line]
+						cube.update()
 
 			# desenha os blocos na tela
 			MAIN_BLOCK.draw()
 			DEMO_BLOCK.draw()
 
 			# desenha os cubos estáticos
-			for cube in CUBES: cube.draw()
+			for line in BITMAP:
+				for cube in line:
+					if cube: cube.draw()
 
 			# definição e inserção dos textos
 			build_gamescreen_texts(SCREEN, SETTINGS)
