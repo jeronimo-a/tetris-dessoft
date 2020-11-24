@@ -232,18 +232,22 @@ class Block():
 		self.update()
 
 
-	def rotate(self, direction):
+	def rotate(self, direction, bitmap):
 		''' rotaciona o bloco mexendo na ordem dos elementos em shape '''
 
 		if direction == 'right':
 			tmp = self.shape.pop()
 			self.shape.insert(0, tmp)
+			self.update()
+			if self.overlapping(bitmap):
+				self.rotate('left', bitmap)
 
 		elif direction == 'left':
 			tmp = self.shape.pop(0)
 			self.shape.append(tmp)
-
-		self.update()
+			self.update()
+			if self.overlapping(bitmap):
+				self.rotate('right', bitmap)
 
 
 	def canMoveDown(self, bitmap):
@@ -313,6 +317,19 @@ class Block():
 			if grid_pos[1] > maximumy: maximumy = grid_pos[1]
 
 		return maximumy
+
+
+	def overlapping(self, bitmap):
+		''' verifica se um bloco está na mesma posição que outro '''
+
+		for grid_pos in self.grid_positions:
+
+			try: overlap = bitmap[grid_pos[1]][grid_pos[0]]
+			except: continue
+
+			if overlap: return True
+
+		return  False
 
 
 

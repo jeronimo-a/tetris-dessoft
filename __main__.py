@@ -117,8 +117,8 @@ def run():
 			if event.type == pygame.KEYDOWN:
 
 				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
-				elif event.key == pygame.K_DOWN and STATE == 1: MAIN_BLOCK.rotate('left')
-				elif event.key == pygame.K_UP and STATE == 1: MAIN_BLOCK.rotate('right')
+				elif event.key == pygame.K_DOWN and STATE == 1: MAIN_BLOCK.rotate('left', BITMAP)
+				elif event.key == pygame.K_UP and STATE == 1: MAIN_BLOCK.rotate('right', BITMAP)
 				elif event.key == pygame.K_LEFT and STATE == 1 and MAIN_BLOCK.canMoveLeft(BITMAP): MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
 				elif event.key == pygame.K_RIGHT and STATE == 1 and MAIN_BLOCK.canMoveRight(BITMAP): MAIN_BLOCK.centerx += MAIN_BLOCK.cube_size
 
