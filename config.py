@@ -38,7 +38,7 @@ class Config():
 		self.block_limit_line = self.screen_height - self.block_limit * self.cube_size_coef * self.screen_width
 
 		# formas dos blocos
-		self.shapes = [
+		self.shapes = []
 			[0,2,1,0],
 			[1,2,0,0],
 			[0,1,0,2],
