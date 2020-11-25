@@ -17,7 +17,7 @@ class Config():
 		self.screen_height = 700
 		self.screen_width = 700
 		self.bg_color = (0, 0, 0)
-
+		
 		# configurações dos blocos
 		self.cube_size_coef = 3/70				# fração da largura da tela
 		self.block_preview_pos = [6/7, 1/4]		# fração do tamanho da tela (posição de amostragem do próximo bloco)
