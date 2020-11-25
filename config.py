@@ -31,7 +31,7 @@ class Config():
 		self.grid_width = 10
 		self.grid_height = 20
 		self.line_thickness = 4
-		self.top_border = self.screen_height / 7
+		self.top_border = self.screen_height / 6
 		self.left_border = self.screen_width / 3.5
 		self.right_border = self.screen_width / 1.4
 		self.block_limit = self.grid_height - 5
