@@ -120,7 +120,29 @@ def build_bitmap(settings):
 
 	return bitmap
 
+def build_gameoverscreen_texts(screen, config, highscore):
+    	
+		font = pygame.font.SysFont(None, 72)
+		description_font = pygame.font.SysFont(None, 36)
+		text = font.render('Game Over', True, (255, 255, 255))
+		font = pygame.font.SysFont(None, 36)
+		text2 = font.render('Aperte ESPAÇO para reiniciar', True, (255, 255, 255))
 
+		text_width = config.screen_width/2 - text.get_width()/2
+		text2_width = config.screen_width/2 - text2.get_width()/2
+		text_height = config.screen_height/4
+		screen.blit(text, (text_width, text_height))
+		screen.blit(text2, (text2_width, config.screen_height/2))
+
+		description_font = pygame.font.SysFont(None, 50)
+		highscore_font = description_font
+		highscore_text = highscore_font.render('Recorde:', True, (255,255,255))
+		score_text = highscore_font.render(str(highscore), True, (255,255,255))
+		highscore_width = highscore_text.get_width()
+		highscore_height = highscore_text.get_height()
+		score_width = score_text.get_width()
+		screen.blit(highscore_text, (config.screen_width/2 - highscore_width/2, config.screen_height * (1 - 1/5)))
+		screen.blit(score_text, (config.screen_width/2 - score_width/2, config.screen_height * (1 - 1/5) + highscore_height))
 
 
 

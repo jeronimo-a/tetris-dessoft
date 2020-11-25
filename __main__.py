@@ -74,8 +74,17 @@ def run():
 
 			spawn = True
 
+
+			new_game = False
+
 		# tela de jogo
 		elif STATE == 1:
+			
+			if new_game:
+				SCORE = 0
+				DEMO_BLOCK = make_random_block(SCREEN, SETTINGS)
+				BITMAP = build_bitmap(SETTINGS)
+				new_game = False 
 
 			# definição e inserção dos textos
 			build_gamescreen_texts(SCREEN, SETTINGS, SCORE)
@@ -162,6 +171,10 @@ def run():
 
 			if SCORE > HIGHSCORE:
 				DATA['highscore'] = SCORE
+				HIGHSCORE = SCORE
+
+			build_gameoverscreen_texts(SCREEN, SETTINGS, HIGHSCORE)
+
 
 
 		# observa eventos
@@ -174,6 +187,7 @@ def run():
 			if event.type == pygame.KEYDOWN:
 
 				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
+				if event.key == pygame.K_SPACE and STATE == 2: STATE = 1; new_game = True 
 				elif event.key == pygame.K_DOWN and STATE == 1: MAIN_BLOCK.rotate('left', BITMAP)
 				elif event.key == pygame.K_UP and STATE == 1: MAIN_BLOCK.rotate('right', BITMAP)
 				elif event.key == pygame.K_LEFT and STATE == 1 and MAIN_BLOCK.canMoveLeft(BITMAP): MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
