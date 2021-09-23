@@ -58,7 +58,7 @@ def run():
 	# loop principal de jogo
 	while True:
 
-		quitting = False
+		QUITTING = False
 
 		# impede que STATE fique maior que 2
 		STATE %= 3
@@ -177,33 +177,20 @@ def run():
 
 
 
-		# observa eventos
-		for event in pygame.event.get():
-
-			if event.type == pygame.QUIT:
-				quitting = True
-				break
-
-			if event.type == pygame.KEYDOWN:
-
-				if event.key == pygame.K_SPACE and STATE == 0: STATE = 1
-				if event.key == pygame.K_SPACE and STATE == 2: STATE = 1; new_game = True 
-				elif event.key == pygame.K_DOWN and STATE == 1: MAIN_BLOCK.rotate('left', BITMAP)
-				elif event.key == pygame.K_UP and STATE == 1: MAIN_BLOCK.rotate('right', BITMAP)
-				elif event.key == pygame.K_LEFT and STATE == 1 and MAIN_BLOCK.canMoveLeft(BITMAP): MAIN_BLOCK.centerx -= MAIN_BLOCK.cube_size
-				elif event.key == pygame.K_RIGHT and STATE == 1 and MAIN_BLOCK.canMoveRight(BITMAP): MAIN_BLOCK.centerx += MAIN_BLOCK.cube_size
+		# observa eventos (também termina a execução do jogo caso requisitado)
+		QUITTING, STATE = catch_events(BITMAP, MAIN_BLOCK)
 
 		# redesenha a tela
 		pygame.display.flip()
 
-		if quitting: break
+		if QUITTING: break
 
 	with open('highscore.json','w') as json_file:
 		json.dump(DATA, json_file)
 
 run()
 
-			
+
 
 
 
