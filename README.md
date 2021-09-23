@@ -13,3 +13,7 @@ Link para video do autor:
 "https://www.youtube.com/watch?v=uoR4ilCWwKA&t=293s"
 
 Nenhuma parte do código utilizado no video foi utilizado no projeto, apenas nos inspiramos no design visual.
+
+# APS de refatoração em Desenvolvimento Colaborativo Ágil - 2021.2
+
+Integrantes: Giancarlo Ruggiero, Jerônimo Afrange e Maria Eduarda Torres
