@@ -178,7 +178,8 @@ def run():
 
 
 		# observa eventos (também termina a execução do jogo caso requisitado)
-		QUITTING, STATE = catch_events(BITMAP, MAIN_BLOCK)
+		try: QUITTING, STATE = catch_events(BITMAP, MAIN_BLOCK, STATE)
+		except UnboundLocalError: QUITTING, STATE = catch_events(BITMAP, None, STATE)
 
 		# redesenha a tela
 		pygame.display.flip()
