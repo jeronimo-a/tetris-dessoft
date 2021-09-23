@@ -5,6 +5,10 @@ Grupo: Felipe Schiavinato, Jerônimo Afrange e Sarah Pimenta
 
 Módulo principal
 
+Refatoração em Desenvolvimento Colaborativo Ágil 2021.2
+
+Grupo: Giancarlo Ruggiero, Jerônimo Afrange e Maria Eduarda Torres
+
 '''
 
 import os
@@ -73,7 +77,6 @@ def run():
 			build_startscreen_texts(SCREEN, SETTINGS, HIGHSCORE)
 
 			spawn = True
-
 
 			new_game = False
 

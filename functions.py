@@ -5,6 +5,10 @@ Grupo: Felipe Schiavinato, Jerônimo Afrange e Sarah Pimenta
 
 Módulo de funções utilizadas recorrentemente
 
+Refatoração em Desenvolvimento Colaborativo Ágil 2021.2
+
+Grupo: Giancarlo Ruggiero, Jerônimo Afrange e Maria Eduarda Torres
+
 '''
 
 import sys
