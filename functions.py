@@ -149,22 +149,22 @@ def build_gameoverscreen_texts(screen, config, highscore):
 		screen.blit(score_text, (config.screen_width/2 - score_width/2, config.screen_height * (1 - 1/5) + highscore_height))
 
 
-def catch_events(bitmap, main_block, state):
+def catch_events(event_manager, state, new_game):
 
 	for event in pygame.event.get():
 
-		if event.type == pygame.QUIT: return True, state
+		if event.type == pygame.QUIT: return True, state, new_game
 
 		if event.type == pygame.KEYDOWN:
 
 			if event.key == pygame.K_SPACE and state == 0: state = 1
 			if event.key == pygame.K_SPACE and state == 2: state = 1; new_game = True 
-			elif event.key == pygame.K_DOWN and state == 1: main_block.rotate('left', bitmap)
-			elif event.key == pygame.K_UP and state == 1: main_block.rotate('right', bitmap)
-			elif event.key == pygame.K_LEFT and state == 1 and main_block.canMoveLeft(bitmap): main_block.centerx -= main_block.cube_size
-			elif event.key == pygame.K_RIGHT and state == 1 and main_block.canMoveRight(bitmap): main_block.centerx += main_block.cube_size
+			elif event.key == pygame.K_DOWN and state == 1: event_manager.down_down()
+			elif event.key == pygame.K_UP and state == 1: event_manager.up_down()
+			elif event.key == pygame.K_LEFT and state == 1: event_manager.left_down()
+			elif event.key == pygame.K_RIGHT and state == 1: event_manager.right_down()
 
-	return False, state
+	return False, state, new_game
 
 
 

@@ -21,6 +21,7 @@ from functions import *
 from block import Block
 from config import Config
 from random import randint
+from EventManager import EventManager
 
 # roda o jogo
 def run():
@@ -56,6 +57,9 @@ def run():
 	# bitmap das posições do grid ocupadas (guarda os cubes dos blocos já depositados no fundo)
 	BITMAP = build_bitmap(SETTINGS)
 
+	# gerenciador de eventos
+	EVENT_MANAGER = EventManager(BITMAP)
+
 	# posições máximas em função de x
 	MAXIMUMY = get_starting_maximumy(SETTINGS)
 
@@ -78,16 +82,16 @@ def run():
 
 			spawn = True
 
-			new_game = False
+			NEW_GAME = False
 
 		# tela de jogo
 		elif STATE == 1:
 			
-			if new_game:
+			if NEW_GAME:
 				SCORE = 0
 				DEMO_BLOCK = make_random_block(SCREEN, SETTINGS)
 				BITMAP = build_bitmap(SETTINGS)
-				new_game = False 
+				NEW_GAME = False 
 
 			# definição e inserção dos textos
 			build_gamescreen_texts(SCREEN, SETTINGS, SCORE)
@@ -96,6 +100,7 @@ def run():
 			if spawn:
 				new_block = make_random_block(SCREEN, SETTINGS)
 				MAIN_BLOCK = DEMO_BLOCK
+				EVENT_MANAGER.set_main_block(MAIN_BLOCK)
 				DEMO_BLOCK = new_block
 				MAIN_BLOCK.spawn()
 				spawn = False
@@ -178,11 +183,8 @@ def run():
 
 			build_gameoverscreen_texts(SCREEN, SETTINGS, HIGHSCORE)
 
-
-
 		# observa eventos (também termina a execução do jogo caso requisitado)
-		try: QUITTING, STATE = catch_events(BITMAP, MAIN_BLOCK, STATE)
-		except UnboundLocalError: QUITTING, STATE = catch_events(BITMAP, None, STATE)
+		QUITTING, STATE, NEW_GAME = catch_events(EVENT_MANAGER, STATE, NEW_GAME)
 
 		# redesenha a tela
 		pygame.display.flip()
